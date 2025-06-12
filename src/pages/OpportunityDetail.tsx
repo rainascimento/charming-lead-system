@@ -1,7 +1,9 @@
-
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import LotsAndItems from '@/components/LotsAndItems';
+import DocumentUpload from '@/components/DocumentUpload';
+import OpinionManagement from '@/components/OpinionManagement';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,8 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit, Save, Plus, Trash2, Upload, Download, MessageSquare, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
+import { Edit, Save, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
 
 export default function OpportunityDetail() {
   const { id } = useParams();
@@ -61,12 +62,12 @@ export default function OpportunityDetail() {
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="identification">Identificação</TabsTrigger>
             <TabsTrigger value="object">Objeto</TabsTrigger>
+            <TabsTrigger value="lots">Lotes/Itens</TabsTrigger>
             <TabsTrigger value="categorization">Categorização</TabsTrigger>
             <TabsTrigger value="opinions">Pareceres</TabsTrigger>
-            <TabsTrigger value="questions">Questionamentos</TabsTrigger>
-            <TabsTrigger value="intelligence">Inteligência</TabsTrigger>
-            <TabsTrigger value="timeline">Linha do Tempo</TabsTrigger>
             <TabsTrigger value="documents">Documentos</TabsTrigger>
+            <TabsTrigger value="intelligence">Inteligência</TabsTrigger>
+            <TabsTrigger value="timeline">Timeline</TabsTrigger>
           </TabsList>
 
           {/* Aba Identificação */}
@@ -176,106 +177,29 @@ export default function OpportunityDetail() {
 
           {/* Aba Objeto da Licitação */}
           <TabsContent value="object">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Objeto da Licitação</CardTitle>
-                  <CardDescription>Descrição e valores do objeto licitado</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="objectDescription">Descrição do Objeto</Label>
-                    <Textarea
-                      id="objectDescription"
-                      placeholder="Descreva o objeto da licitação..."
-                      disabled={!isEditing}
-                      className={!isEditing ? "bg-muted" : ""}
-                      defaultValue="Contratação de empresa especializada para desenvolvimento, implementação e manutenção de sistema de gestão integrado."
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="globalValue">Valor Global</Label>
-                      <Input
-                        id="globalValue"
-                        defaultValue={opportunity.value}
-                        disabled={!isEditing}
-                        className={!isEditing ? "bg-muted" : ""}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="monthlyValue">Valor Mensal</Label>
-                      <Input
-                        id="monthlyValue"
-                        defaultValue={opportunity.monthlyValue}
-                        disabled={!isEditing}
-                        className={!isEditing ? "bg-muted" : ""}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Objeto da Licitação</CardTitle>
+                <CardDescription>Descrição geral do objeto licitado</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="objectDescription">Descrição do Objeto</Label>
+                  <Textarea
+                    id="objectDescription"
+                    placeholder="Descreva o objeto da licitação..."
+                    disabled={!isEditing}
+                    className={!isEditing ? "bg-muted" : ""}
+                    defaultValue="Contratação de empresa especializada para desenvolvimento, implementação e manutenção de sistema de gestão integrado."
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle>Lotes e Itens</CardTitle>
-                    <CardDescription>Detalhamento dos lotes do processo</CardDescription>
-                  </div>
-                  {isEditing && (
-                    <Button size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Adicionar Lote
-                    </Button>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Lote</TableHead>
-                        <TableHead>Descrição</TableHead>
-                        <TableHead>Quantidade</TableHead>
-                        <TableHead>Unidade</TableHead>
-                        <TableHead>Valor</TableHead>
-                        {isEditing && <TableHead>Ações</TableHead>}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-medium">Lote 01</TableCell>
-                        <TableCell>Sistema de Gestão Principal</TableCell>
-                        <TableCell>1</TableCell>
-                        <TableCell>Unidade</TableCell>
-                        <TableCell>R$ 1.500.000,00</TableCell>
-                        {isEditing && (
-                          <TableCell>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium">Lote 02</TableCell>
-                        <TableCell>Módulos Complementares</TableCell>
-                        <TableCell>5</TableCell>
-                        <TableCell>Módulo</TableCell>
-                        <TableCell>R$ 1.000.000,00</TableCell>
-                        {isEditing && (
-                          <TableCell>
-                            <Button variant="ghost" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Nova Aba Lotes e Itens */}
+          <TabsContent value="lots">
+            <LotsAndItems />
           </TabsContent>
 
           {/* Aba Categorização */}
@@ -368,133 +292,14 @@ export default function OpportunityDetail() {
             </Card>
           </TabsContent>
 
-          {/* Aba Pareceres */}
+          {/* Aba Pareceres Atualizada */}
           <TabsContent value="opinions">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle>Pareceres das Áreas</CardTitle>
-                    <CardDescription>Análises e validações multidisciplinares</CardDescription>
-                  </div>
-                  <Button size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Solicitar Parecer
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                              <h4 className="font-semibold">Parecer Técnico - Aprovado</h4>
-                              <Badge variant="secondary" className="bg-green-500">Favorável</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">Por: João Silva - Área Técnica</p>
-                            <p className="text-sm">Solução técnica adequada às necessidades do órgão. Recomendamos participação.</p>
-                          </div>
-                          <span className="text-xs text-muted-foreground">Há 2 dias</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-5 w-5 text-yellow-500" />
-                              <h4 className="font-semibold">Parecer Jurídico - Pendente</h4>
-                              <Badge variant="secondary" className="bg-yellow-500">Análise</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">Por: Maria Santos - Área Jurídica</p>
-                            <p className="text-sm">Aguardando análise dos documentos e editais.</p>
-                          </div>
-                          <span className="text-xs text-muted-foreground">Há 1 dia</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <AlertTriangle className="h-5 w-5 text-red-500" />
-                              <h4 className="font-semibold">Parecer Comercial - Restrições</h4>
-                              <Badge variant="secondary" className="bg-red-500">Não Favorável</Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">Por: Carlos Oliveira - Área Comercial</p>
-                            <p className="text-sm">Margem muito baixa para o escopo proposto. Necessária reavaliação.</p>
-                          </div>
-                          <span className="text-xs text-muted-foreground">Há 3 dias</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <OpinionManagement />
           </TabsContent>
 
-          {/* Aba Questionamentos */}
-          <TabsContent value="questions">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Questionamentos</CardTitle>
-                  <CardDescription>Perguntas e esclarecimentos ao órgão</CardDescription>
-                </div>
-                <Button size="sm">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Novo Questionamento
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="font-semibold">Questionamento 001</h4>
-                          <p className="text-sm text-muted-foreground">Enviado em: 10/12/2023</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Pergunta:</p>
-                          <p className="text-sm">É possível utilizar tecnologias open source para o desenvolvimento da solução?</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Resposta:</p>
-                          <p className="text-sm text-green-600">Sim, desde que atendam aos requisitos técnicos especificados no edital.</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="font-semibold">Questionamento 002</h4>
-                          <p className="text-sm text-muted-foreground">Enviado em: 12/12/2023</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Pergunta:</p>
-                          <p className="text-sm">Qual o prazo para implementação da solução após a assinatura do contrato?</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Resposta:</p>
-                          <p className="text-sm text-yellow-600">Aguardando resposta do órgão...</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Nova Aba Documentos */}
+          <TabsContent value="documents">
+            <DocumentUpload />
           </TabsContent>
 
           {/* Aba Inteligência */}
@@ -595,7 +400,7 @@ export default function OpportunityDetail() {
             </Card>
           </TabsContent>
 
-          {/* Aba Linha do Tempo */}
+          {/* Aba Timeline */}
           <TabsContent value="timeline">
             <Card>
               <CardHeader>
@@ -648,86 +453,6 @@ export default function OpportunityDetail() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Aba Documentos */}
-          <TabsContent value="documents">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle>Atestados e Documentos</CardTitle>
-                  <CardDescription>Gestão de documentos obrigatórios</CardDescription>
-                </div>
-                <Button size="sm">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Documento
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Documento</TableHead>
-                      <TableHead>Categoria</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Data Upload</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">Atestado de Capacidade Técnica</TableCell>
-                      <TableCell>Técnico</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="bg-green-500">Atende</Badge>
-                      </TableCell>
-                      <TableCell>15/12/2023</TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Certidão Negativa de Débitos</TableCell>
-                      <TableCell>Fiscal</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="bg-yellow-500">Parcialmente</Badge>
-                      </TableCell>
-                      <TableCell>16/12/2023</TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Balanço Patrimonial</TableCell>
-                      <TableCell>Financeiro</TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="bg-red-500">Não Atende</Badge>
-                      </TableCell>
-                      <TableCell>-</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm">
-                          <Upload className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
               </CardContent>
             </Card>
           </TabsContent>
