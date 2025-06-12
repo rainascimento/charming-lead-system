@@ -28,7 +28,7 @@ const navigation = [
 
 const adminNavigation = [
   { name: 'Atestados', href: '/certificates', icon: FileText },
-  { name: 'Users', href: '/users', icon: Users },
+  { name: 'Users', href: '/permissions', icon: Users },
   { name: 'Parâmetros', href: '/parameters', icon: Settings },
 ];
 
@@ -146,12 +146,12 @@ export default function Layout({ children }: LayoutProps) {
               </span>
             </Button>
             
-            <div className="flex items-center space-x-3">
+            <Link to="/profile" className="flex items-center space-x-3">
               <Avatar className="w-8 h-8">
                 <AvatarImage src="" />
                 <AvatarFallback className="bg-purple-600 text-white">JD</AvatarFallback>
               </Avatar>
-            </div>
+            </Link>
           </div>
         </header>
 
