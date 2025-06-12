@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Opportunities from "./pages/Opportunities";
+import NewOpportunity from "./pages/NewOpportunity";
 import OpportunityDetail from "./pages/OpportunityDetail";
 import Profile from "./pages/Profile";
 import Permissions from "./pages/Permissions";
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/opportunities/new" element={<NewOpportunity />} />
           <Route path="/opportunities/:id" element={<OpportunityDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/permissions" element={<Permissions />} />
