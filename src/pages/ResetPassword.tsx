@@ -1,18 +1,18 @@
 
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Lock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, AlertCircle, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email || '';
-  const code = location.state?.code || '';
+  const [searchParams] = useSearchParams();
+  const { updatePassword } = useAuth();
   
   const [formData, setFormData] = useState({
     password: '',
@@ -21,57 +21,71 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState({
-    length: false,
-    uppercase: false,
-    lowercase: false,
-    number: false,
-    special: false
-  });
 
-  // Validação da força da senha
+  // Check if we have the necessary tokens
   useEffect(() => {
-    const password = formData.password;
-    setPasswordStrength({
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /\d/.test(password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
-    });
-  }, [formData.password]);
+    const accessToken = searchParams.get('access_token');
+    const refreshToken = searchParams.get('refresh_token');
+    
+    if (!accessToken || !refreshToken) {
+      setError('Link de recuperação inválido ou expirado.');
+    }
+  }, [searchParams]);
 
-  const isPasswordValid = Object.values(passwordStrength).every(Boolean);
+  const validatePassword = (password: string) => {
+    if (password.length < 8) {
+      return 'A senha deve ter pelo menos 8 caracteres';
+    }
+    if (!/(?=.*[a-z])/.test(password)) {
+      return 'A senha deve conter pelo menos uma letra minúscula';
+    }
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return 'A senha deve conter pelo menos uma letra maiúscula';
+    }
+    if (!/(?=.*\d)/.test(password)) {
+      return 'A senha deve conter pelo menos um número';
+    }
+    if (!/(?=.*[@$!%*?&])/.test(password)) {
+      return 'A senha deve conter pelo menos um símbolo (@$!%*?&)';
+    }
+    return '';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (!isPasswordValid) {
-      setError('A senha não atende aos critérios de segurança.');
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem.');
-      return;
-    }
-
     setIsLoading(true);
 
+    // Validate password strength
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
+      setIsLoading(false);
+      return;
+    }
+
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('As senhas não coincidem');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // Simulação de redefinição de senha
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsSuccess(true);
+      const { error } = await updatePassword(formData.password);
       
-      // Redirecionar para login após alguns segundos
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+      if (error) {
+        setError('Erro ao atualizar senha. O link pode ter expirado.');
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      }
     } catch (err) {
-      setError('Erro ao redefinir senha. Tente novamente.');
+      setError('Erro interno. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -85,36 +99,19 @@ const ResetPassword = () => {
     if (error) setError('');
   };
 
-  // Redirecionar se não tiver email e código
-  useEffect(() => {
-    if (!email || !code) {
-      navigate('/forgot-password');
-    }
-  }, [email, code, navigate]);
-
-  if (isSuccess) {
+  if (success) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mb-4">
               <CheckCircle className="text-white w-8 h-8" />
             </div>
-            <CardTitle className="text-2xl font-bold text-green-600">Senha Redefinida!</CardTitle>
+            <CardTitle className="text-2xl font-bold text-green-600">Senha Atualizada!</CardTitle>
             <CardDescription>
-              Sua senha foi redefinida com sucesso. Você será redirecionado para a página de login.
+              Sua senha foi redefinida com sucesso. Você será redirecionado para o login.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Button
-                onClick={() => navigate('/login')}
-                className="w-full"
-              >
-                Ir para o login
-              </Button>
-            </div>
-          </CardContent>
         </Card>
       </div>
     );
@@ -140,9 +137,9 @@ const ResetPassword = () => {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
+            
             <div className="space-y-2">
-              <Label htmlFor="password">Nova senha</Label>
+              <Label htmlFor="password">Nova Senha</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -168,43 +165,25 @@ const ResetPassword = () => {
                   )}
                 </Button>
               </div>
-              
-              {/* Indicadores de força da senha */}
-              <div className="space-y-1 text-xs">
-                <p className="font-medium">Critérios de segurança:</p>
-                <div className="grid grid-cols-2 gap-1">
-                  <div className={`flex items-center space-x-1 ${passwordStrength.length ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${passwordStrength.length ? 'bg-green-600' : 'bg-gray-300'}`} />
-                    <span>Mín. 8 caracteres</span>
-                  </div>
-                  <div className={`flex items-center space-x-1 ${passwordStrength.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${passwordStrength.uppercase ? 'bg-green-600' : 'bg-gray-300'}`} />
-                    <span>Letra maiúscula</span>
-                  </div>
-                  <div className={`flex items-center space-x-1 ${passwordStrength.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${passwordStrength.lowercase ? 'bg-green-600' : 'bg-gray-300'}`} />
-                    <span>Letra minúscula</span>
-                  </div>
-                  <div className={`flex items-center space-x-1 ${passwordStrength.number ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${passwordStrength.number ? 'bg-green-600' : 'bg-gray-300'}`} />
-                    <span>Número</span>
-                  </div>
-                  <div className={`flex items-center space-x-1 ${passwordStrength.special ? 'text-green-600' : 'text-gray-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${passwordStrength.special ? 'bg-green-600' : 'bg-gray-300'}`} />
-                    <span>Símbolo</span>
-                  </div>
-                </div>
+              <div className="text-xs text-gray-500 space-y-1">
+                <p>A senha deve conter:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Pelo menos 8 caracteres</li>
+                  <li>Letras maiúsculas e minúsculas</li>
+                  <li>Pelo menos um número</li>
+                  <li>Pelo menos um símbolo (@$!%*?&)</li>
+                </ul>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+              <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="Confirme sua nova senha"
+                  placeholder="Digite a senha novamente"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
@@ -226,29 +205,16 @@ const ResetPassword = () => {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading || !isPasswordValid || formData.password !== formData.confirmPassword}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                <>Redefinindo senha...</>
+                <>Atualizando...</>
               ) : (
                 <>
                   <Lock className="w-4 h-4 mr-2" />
-                  Redefinir senha
+                  Atualizar Senha
                 </>
               )}
             </Button>
-
-            <div className="text-center">
-              <Link
-                to="/login"
-                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-              >
-                Voltar ao login
-              </Link>
-            </div>
           </form>
         </CardContent>
       </Card>

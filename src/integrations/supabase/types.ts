@@ -9,7 +9,377 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      activities: {
+        Row: {
+          action: string
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          opportunity_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          opportunity_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          opportunity_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          name: string
+          opportunity_id: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          name: string
+          opportunity_id?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          name?: string
+          opportunity_id?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          item_number: number
+          lot_id: string | null
+          quantity: number | null
+          specifications: string | null
+          total_price: number | null
+          unit: string | null
+          unit_price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          item_number: number
+          lot_id?: string | null
+          quantity?: number | null
+          specifications?: string | null
+          total_price?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          item_number?: number
+          lot_id?: string | null
+          quantity?: number | null
+          specifications?: string | null
+          total_price?: number | null
+          unit?: string | null
+          unit_price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lots: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          estimated_value: number | null
+          id: string
+          lot_number: number
+          opportunity_id: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          lot_number: number
+          opportunity_id?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          lot_number?: number
+          opportunity_id?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lots_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opinions: {
+        Row: {
+          comments: string | null
+          content: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          opportunity_id: string | null
+          review_date: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["opinion_status"] | null
+          title: string
+          type: Database["public"]["Enums"]["opinion_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          comments?: string | null
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          opportunity_id?: string | null
+          review_date?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["opinion_status"] | null
+          title: string
+          type: Database["public"]["Enums"]["opinion_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          comments?: string | null
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          opportunity_id?: string | null
+          review_date?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["opinion_status"] | null
+          title?: string
+          type?: Database["public"]["Enums"]["opinion_type"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opinions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opinions_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opinions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunities: {
+        Row: {
+          assigned_to: string | null
+          bidding_number: string | null
+          bidding_type: Database["public"]["Enums"]["bidding_type"] | null
+          category: string | null
+          created_at: string | null
+          created_by: string | null
+          deadline_date: string | null
+          description: string | null
+          estimated_value: number | null
+          execution_mode: Database["public"]["Enums"]["execution_mode"] | null
+          id: string
+          notes: string | null
+          opening_date: string | null
+          organ: string
+          publication_date: string | null
+          status: Database["public"]["Enums"]["opportunity_status"] | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          bidding_number?: string | null
+          bidding_type?: Database["public"]["Enums"]["bidding_type"] | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deadline_date?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          execution_mode?: Database["public"]["Enums"]["execution_mode"] | null
+          id?: string
+          notes?: string | null
+          opening_date?: string | null
+          organ: string
+          publication_date?: string | null
+          status?: Database["public"]["Enums"]["opportunity_status"] | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          bidding_number?: string | null
+          bidding_type?: Database["public"]["Enums"]["bidding_type"] | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deadline_date?: string | null
+          description?: string | null
+          estimated_value?: number | null
+          execution_mode?: Database["public"]["Enums"]["execution_mode"] | null
+          id?: string
+          notes?: string | null
+          opening_date?: string | null
+          organ?: string
+          publication_date?: string | null
+          status?: Database["public"]["Enums"]["opportunity_status"] | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          department: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          department?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          department?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +388,34 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      bidding_type:
+        | "pregao_eletronico"
+        | "pregao_presencial"
+        | "concorrencia"
+        | "tomada_precos"
+        | "convite"
+        | "dispensa"
+        | "inexigibilidade"
+      execution_mode:
+        | "menor_preco"
+        | "melhor_tecnica"
+        | "tecnica_preco"
+        | "maior_lance"
+      opinion_status:
+        | "pendente"
+        | "em_analise"
+        | "aprovado"
+        | "rejeitado"
+        | "revisao"
+      opinion_type: "tecnico" | "juridico" | "financeiro" | "comercial"
+      opportunity_status:
+        | "identificacao"
+        | "analise_tecnica"
+        | "parecer"
+        | "proposta"
+        | "em_andamento"
+        | "finalizada"
+        | "cancelada"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +530,39 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      bidding_type: [
+        "pregao_eletronico",
+        "pregao_presencial",
+        "concorrencia",
+        "tomada_precos",
+        "convite",
+        "dispensa",
+        "inexigibilidade",
+      ],
+      execution_mode: [
+        "menor_preco",
+        "melhor_tecnica",
+        "tecnica_preco",
+        "maior_lance",
+      ],
+      opinion_status: [
+        "pendente",
+        "em_analise",
+        "aprovado",
+        "rejeitado",
+        "revisao",
+      ],
+      opinion_type: ["tecnico", "juridico", "financeiro", "comercial"],
+      opportunity_status: [
+        "identificacao",
+        "analise_tecnica",
+        "parecer",
+        "proposta",
+        "em_andamento",
+        "finalizada",
+        "cancelada",
+      ],
+    },
   },
 } as const
