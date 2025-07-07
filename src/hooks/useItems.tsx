@@ -29,7 +29,7 @@ export const useItems = (lotId: string) => {
       const { data, error } = await supabase
         .from('itens')
         .select('*')
-        .eq('lote_id', lotId)
+        .eq('lote_id', Number(lotId))
         .order('id', { ascending: true });
 
       if (error) {

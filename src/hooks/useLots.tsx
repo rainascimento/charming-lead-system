@@ -24,7 +24,7 @@ export const useLots = (opportunityId: string) => {
       const { data, error } = await supabase
         .from('lotes')
         .select('*')
-        .eq('oportunidade_id', opportunityId)
+        .eq('oportunidade_id', Number(opportunityId))
         .order('id', { ascending: true });
 
       if (error) {

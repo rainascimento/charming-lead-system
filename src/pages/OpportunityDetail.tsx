@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import LotsAndItems from '@/components/LotsAndItems';
@@ -304,7 +303,7 @@ export default function OpportunityDetail() {
           </TabsContent>
 
           <TabsContent value="lots">
-            <LotsAndItems opportunityId={opportunity.id} />
+            <LotsAndItems />
           </TabsContent>
 
           <TabsContent value="categorization">
@@ -329,11 +328,11 @@ export default function OpportunityDetail() {
           </TabsContent>
 
           <TabsContent value="opinions">
-            <OpinionManagement opportunityId={opportunity.id} />
+            <OpinionManagement />
           </TabsContent>
 
           <TabsContent value="documents">
-            <DocumentUpload opportunityId={opportunity.id} />
+            <DocumentUpload />
           </TabsContent>
 
           <TabsContent value="intelligence">
