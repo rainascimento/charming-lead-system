@@ -7,10 +7,8 @@ import { toast } from 'sonner';
 export interface Lot {
   id: string;
   opportunity_id: string;
-  lot_number: number;
-  title: string;
+  name: string;
   description?: string;
-  estimated_value?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -24,10 +22,10 @@ export const useLots = (opportunityId: string) => {
     queryFn: async () => {
       console.log('Fetching lots for opportunity:', opportunityId);
       const { data, error } = await supabase
-        .from('lots')
+        .from('lotes')
         .select('*')
-        .eq('opportunity_id', opportunityId)
-        .order('lot_number', { ascending: true });
+        .eq('oportunidade_id', opportunityId)
+        .order('id', { ascending: true });
 
       if (error) {
         console.error('Error fetching lots:', error);
@@ -35,7 +33,15 @@ export const useLots = (opportunityId: string) => {
       }
 
       console.log('Fetched lots:', data);
-      return data as Lot[];
+      // Mapear os dados do banco para o formato esperado
+      return data.map(lot => ({
+        id: lot.id.toString(),
+        opportunity_id: lot.oportunidade_id.toString(),
+        name: lot.nome,
+        description: lot.descricao || '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })) as Lot[];
     },
     enabled: !!user && !!opportunityId,
   });
@@ -43,9 +49,17 @@ export const useLots = (opportunityId: string) => {
   const createLot = useMutation({
     mutationFn: async (newLot: Omit<Lot, 'id' | 'created_at' | 'updated_at'>) => {
       console.log('Creating lot:', newLot);
+      
+      // Mapear para o formato do banco
+      const lotData = {
+        oportunidade_id: Number(newLot.opportunity_id),
+        nome: newLot.name,
+        descricao: newLot.description || '',
+      };
+
       const { data, error } = await supabase
-        .from('lots')
-        .insert([newLot])
+        .from('lotes')
+        .insert([lotData])
         .select()
         .single();
 
@@ -70,10 +84,16 @@ export const useLots = (opportunityId: string) => {
   const updateLot = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Lot> & { id: string }) => {
       console.log('Updating lot:', id, updates);
+      
+      // Mapear para o formato do banco
+      const updateData: any = {};
+      if (updates.name) updateData.nome = updates.name;
+      if (updates.description !== undefined) updateData.descricao = updates.description;
+
       const { data, error } = await supabase
-        .from('lots')
-        .update(updates)
-        .eq('id', id)
+        .from('lotes')
+        .update(updateData)
+        .eq('id', Number(id))
         .select()
         .single();
 
@@ -99,9 +119,9 @@ export const useLots = (opportunityId: string) => {
     mutationFn: async (id: string) => {
       console.log('Deleting lot:', id);
       const { error } = await supabase
-        .from('lots')
+        .from('lotes')
         .delete()
-        .eq('id', id);
+        .eq('id', Number(id));
 
       if (error) {
         console.error('Error deleting lot:', error);

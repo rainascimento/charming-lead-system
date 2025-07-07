@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
@@ -36,9 +35,12 @@ export const useOpportunities = () => {
     queryFn: async () => {
       console.log('Fetching opportunities from database...');
       const { data, error } = await supabase
-        .from('opportunities')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from('oportunidades')
+        .select(`
+          *,
+          orgaos_publicos(nome, sigla)
+        `)
+        .order('id', { ascending: false });
 
       if (error) {
         console.error('Error fetching opportunities:', error);
@@ -46,7 +48,28 @@ export const useOpportunities = () => {
       }
 
       console.log('Fetched opportunities:', data);
-      return data as Opportunity[];
+      // Mapear os dados do banco para o formato esperado
+      return data.map(opp => ({
+        id: opp.id.toString(),
+        title: opp.objeto,
+        description: opp.objeto,
+        organ: opp.orgaos_publicos?.nome || 'Órgão não informado',
+        bidding_number: opp.numero_processo,
+        bidding_type: 'pregao_eletronico', // Valor padrão
+        execution_mode: 'menor_preco', // Valor padrão
+        estimated_value: 0, // Não disponível no schema atual
+        publication_date: opp.data_abertura,
+        deadline_date: opp.data_entrega,
+        opening_date: opp.data_abertura,
+        status: getStatusFromPipeline(opp.fase_pipeline_id),
+        created_by: user?.id,
+        assigned_to: user?.id,
+        category: 'outros',
+        tags: [],
+        notes: '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })) as Opportunity[];
     },
     enabled: !!user,
   });
@@ -54,12 +77,29 @@ export const useOpportunities = () => {
   const createOpportunity = useMutation({
     mutationFn: async (newOpportunity: Omit<Opportunity, 'id' | 'created_at' | 'updated_at'>) => {
       console.log('Creating opportunity:', newOpportunity);
+      
+      // Para criar uma oportunidade, precisamos de dados mínimos
+      // Como o schema é complexo, vou usar valores padrão para campos obrigatórios
+      const opportunityData = {
+        objeto: newOpportunity.title,
+        numero_processo: newOpportunity.bidding_number || `PROC-${Date.now()}`,
+        data_abertura: newOpportunity.opening_date || new Date().toISOString().split('T')[0],
+        data_entrega: newOpportunity.deadline_date || new Date().toISOString().split('T')[0],
+        uasg: '000000', // Valor padrão
+        uf: 'SP', // Valor padrão
+        orgao_id: 1, // Valor padrão - ajustar conforme necessário
+        portal_id: 1, // Valor padrão
+        esfera_id: 1, // Valor padrão
+        modalidade_id: 1, // Valor padrão
+        mercado_id: 1, // Valor padrão
+        setor_id: 1, // Valor padrão
+        fase_pipeline_id: 1, // Identificação
+        status_id: 1, // Valor padrão
+      };
+
       const { data, error } = await supabase
-        .from('opportunities')
-        .insert([{
-          ...newOpportunity,
-          created_by: user?.id,
-        }])
+        .from('oportunidades')
+        .insert([opportunityData])
         .select()
         .single();
 
@@ -84,10 +124,18 @@ export const useOpportunities = () => {
   const updateOpportunity = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Opportunity> & { id: string }) => {
       console.log('Updating opportunity:', id, updates);
+      
+      // Mapear apenas os campos que podem ser atualizados
+      const updateData: any = {};
+      if (updates.title) updateData.objeto = updates.title;
+      if (updates.bidding_number) updateData.numero_processo = updates.bidding_number;
+      if (updates.opening_date) updateData.data_abertura = updates.opening_date;
+      if (updates.deadline_date) updateData.data_entrega = updates.deadline_date;
+
       const { data, error } = await supabase
-        .from('opportunities')
-        .update(updates)
-        .eq('id', id)
+        .from('oportunidades')
+        .update(updateData)
+        .eq('id', Number(id))
         .select()
         .single();
 
@@ -113,9 +161,9 @@ export const useOpportunities = () => {
     mutationFn: async (id: string) => {
       console.log('Deleting opportunity:', id);
       const { error } = await supabase
-        .from('opportunities')
+        .from('oportunidades')
         .delete()
-        .eq('id', id);
+        .eq('id', Number(id));
 
       if (error) {
         console.error('Error deleting opportunity:', error);
@@ -144,6 +192,18 @@ export const useOpportunities = () => {
   };
 };
 
+// Função auxiliar para mapear fase do pipeline para status
+function getStatusFromPipeline(faseId: number): string {
+  const statusMap: { [key: number]: string } = {
+    1: 'identificacao',
+    2: 'analise_tecnica',
+    3: 'parecer',
+    4: 'proposta',
+    5: 'em_andamento',
+  };
+  return statusMap[faseId] || 'identificacao';
+}
+
 export const useOpportunity = (id: string) => {
   const { user } = useAuth();
 
@@ -152,9 +212,12 @@ export const useOpportunity = (id: string) => {
     queryFn: async () => {
       console.log('Fetching opportunity:', id);
       const { data, error } = await supabase
-        .from('opportunities')
-        .select('*')
-        .eq('id', id)
+        .from('oportunidades')
+        .select(`
+          *,
+          orgaos_publicos(nome, sigla)
+        `)
+        .eq('id', Number(id))
         .single();
 
       if (error) {
@@ -163,7 +226,28 @@ export const useOpportunity = (id: string) => {
       }
 
       console.log('Fetched opportunity:', data);
-      return data as Opportunity;
+      // Mapear para o formato esperado
+      return {
+        id: data.id.toString(),
+        title: data.objeto,
+        description: data.objeto,
+        organ: data.orgaos_publicos?.nome || 'Órgão não informado',
+        bidding_number: data.numero_processo,
+        bidding_type: 'pregao_eletronico',
+        execution_mode: 'menor_preco',
+        estimated_value: 0,
+        publication_date: data.data_abertura,
+        deadline_date: data.data_entrega,
+        opening_date: data.data_abertura,
+        status: getStatusFromPipeline(data.fase_pipeline_id),
+        created_by: user?.id,
+        assigned_to: user?.id,
+        category: 'outros',
+        tags: [],
+        notes: '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as Opportunity;
     },
     enabled: !!user && !!id,
   });
