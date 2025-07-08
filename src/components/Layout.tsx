@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,6 @@ interface LayoutProps {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: BarChart3, current: false },
   { name: 'Pipeline', href: '/opportunities', icon: FileText, current: true },
-  { name: 'Orgãos Prospectados', href: '/clients', icon: Users, current: false },
   { name: 'Clientes', href: '/clients', icon: Users, current: false },
 ];
 
