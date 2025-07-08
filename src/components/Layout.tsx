@@ -1,203 +1,145 @@
 
-import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarRail,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import {
-  Home,
-  Target,
-  Users,
-  FileText,
-  Settings,
-  User,
-  LogOut,
-  Plus,
-} from "lucide-react";
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { 
+  BarChart3, 
+  FileText, 
+  Users, 
+  Settings, 
+  User, 
+  Search,
+  Bell,
+  ChevronDown
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const menuItems = [
-  { icon: Home, label: "Dashboard", path: "/dashboard" },
-  { icon: Target, label: "Oportunidades", path: "/opportunities" },
-  { icon: Users, label: "Clientes", path: "/clients" },
-  { icon: FileText, label: "Relatórios", path: "/reports" },
-  { icon: Settings, label: "Configurações", path: "/settings" },
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const navigation = [
+  { name: 'Dashboard', href: '/dashboard', icon: BarChart3, current: false },
+  { name: 'Pipeline', href: '/opportunities', icon: FileText, current: true },
+  { name: 'Clientes', href: '/clients', icon: Users, current: false },
 ];
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+const adminNavigation = [
+  { name: 'Users', href: '/permissions', icon: Users },
+  { name: 'Parâmetros', href: '/parameters', icon: Settings },
+];
+
+export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/login");
-  };
-
-  const getUserDisplayName = () => {
-    if (user?.user_metadata?.full_name) {
-      return user.user_metadata.full_name;
-    }
-    if (user?.raw_user_meta_data?.full_name) {
-      return user.raw_user_meta_data.full_name;
-    }
-    return user?.email?.split('@')[0] || 'Usuário';
-  };
-
-  const getUserAvatar = () => {
-    if (user?.user_metadata?.avatar_url) {
-      return user.user_metadata.avatar_url;
-    }
-    if (user?.raw_user_meta_data?.avatar_url) {
-      return user.raw_user_meta_data.avatar_url;
-    }
-    return undefined;
-  };
-
-  const getUserInitials = () => {
-    const displayName = getUserDisplayName();
-    return displayName
-      .split(' ')
-      .map((name) => name[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <Sidebar collapsible="icon" className="border-r border-border">
-          <SidebarHeader className="border-b border-border p-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Target className="w-4 h-4 text-primary-foreground" />
-              </div>
-              {!isCollapsed && (
-                <span className="font-semibold text-foreground">CRM Sistema</span>
-              )}
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <div className={cn("bg-white border-r border-gray-200 transition-all duration-200", isCollapsed ? "w-16" : "w-64")}>
+        {/* Logo */}
+        <div className="flex items-center h-16 px-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">V</span>
             </div>
-          </SidebarHeader>
-          
-          <SidebarContent className="p-2">
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    onClick={() => navigate(item.path)}
-                    isActive={location.pathname === item.path}
-                    className="w-full justify-start"
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-            
-            <div className="mt-6">
-              <Button
-                onClick={() => navigate("/opportunities/new")}
-                className="w-full justify-start gap-2"
-                size="sm"
-              >
-                <Plus className="w-4 h-4" />
-                Nova Oportunidade
-              </Button>
-            </div>
-          </SidebarContent>
-          
-          <SidebarFooter className="border-t border-border p-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="w-full justify-start">
-                  <Avatar className="w-6 h-6">
-                    <AvatarImage src={getUserAvatar()} alt={getUserDisplayName()} />
-                    <AvatarFallback className="text-xs">
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="truncate">{getUserDisplayName()}</span>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
-                  <User className="w-4 h-4 mr-2" />
-                  Perfil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/permissions")}>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Permissões
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarFooter>
-          
-          <SidebarRail />
-        </Sidebar>
-
-        <div className="flex-1 flex flex-col">
-          <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="flex h-16 items-center px-6 gap-4">
-              <SidebarTrigger />
-              <div className="flex-1" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={getUserAvatar()} alt={getUserDisplayName()} />
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuItem onClick={() => navigate("/profile")}>
-                    <User className="w-4 h-4 mr-2" />
-                    Perfil
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/permissions")}>
-                    <Settings className="w-4 h-4 mr-2" />
-                    Permissões
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </header>
-          
-          <main className="flex-1 overflow-auto p-6">
-            {children}
-          </main>
+            {!isCollapsed && (
+              <span className="font-semibold text-gray-900">vint.global</span>
+            )}
+          </div>
         </div>
+
+        {/* Navigation */}
+        <nav className="mt-6 px-3">
+          {/* Main Navigation */}
+          <div className="space-y-1">
+            {navigation.map((item) => {
+              const isActive = location.pathname === item.href || 
+                             (item.href === '/opportunities' && location.pathname.startsWith('/opportunities'));
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+                    isActive 
+                      ? "bg-purple-100 text-purple-700" 
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  )}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {!isCollapsed && <span className="ml-3">{item.name}</span>}
+                  {!isCollapsed && isActive && (
+                    <ChevronDown className="w-4 h-4 ml-auto" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Administration */}
+          {!isCollapsed && (
+            <div className="mt-8">
+              <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                ADMINISTRAÇÃO
+              </h3>
+              <div className="mt-2 space-y-1">
+                {adminNavigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="ml-3">{item.name}</span>
+                    <ChevronDown className="w-4 h-4 ml-auto" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </nav>
       </div>
-    </SidebarProvider>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6">
+          <div className="flex items-center space-x-4 flex-1">
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                type="search"
+                placeholder="Search (Ctrl+/)"
+                className="pl-10 w-80 bg-gray-50 border-gray-200"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="sm">
+              <Bell className="w-5 h-5" />
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                1
+              </span>
+            </Button>
+            
+            <Link to="/profile" className="flex items-center space-x-3">
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="" />
+                <AvatarFallback className="bg-purple-600 text-white">JD</AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }
