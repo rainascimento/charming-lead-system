@@ -29,6 +29,117 @@ export type Database = {
         }
         Relationships: []
       }
+      cliente_oportunidades: {
+        Row: {
+          cliente_id: number | null
+          data_vinculacao: string | null
+          id: number
+          oportunidade_id: number | null
+        }
+        Insert: {
+          cliente_id?: number | null
+          data_vinculacao?: string | null
+          id?: number
+          oportunidade_id?: number | null
+        }
+        Update: {
+          cliente_id?: number | null
+          data_vinculacao?: string | null
+          id?: number
+          oportunidade_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_oportunidades_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cliente_oportunidades_oportunidade_id_fkey"
+            columns: ["oportunidade_id"]
+            isOneToOne: false
+            referencedRelation: "oportunidades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cliente_projetos: {
+        Row: {
+          cliente_id: number | null
+          data_vinculacao: string | null
+          id: number
+          projeto_id: number | null
+        }
+        Insert: {
+          cliente_id?: number | null
+          data_vinculacao?: string | null
+          id?: number
+          projeto_id?: number | null
+        }
+        Update: {
+          cliente_id?: number | null
+          data_vinculacao?: string | null
+          id?: number
+          projeto_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_projetos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cliente_projetos_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clientes: {
+        Row: {
+          cnpj: string | null
+          data_criacao: string | null
+          data_ultima_interacao: string | null
+          email_contato: string | null
+          endereco: string | null
+          id: number
+          logo_url: string | null
+          nome: string
+          status_cliente: string | null
+          telefone_contato: string | null
+        }
+        Insert: {
+          cnpj?: string | null
+          data_criacao?: string | null
+          data_ultima_interacao?: string | null
+          email_contato?: string | null
+          endereco?: string | null
+          id?: number
+          logo_url?: string | null
+          nome: string
+          status_cliente?: string | null
+          telefone_contato?: string | null
+        }
+        Update: {
+          cnpj?: string | null
+          data_criacao?: string | null
+          data_ultima_interacao?: string | null
+          email_contato?: string | null
+          endereco?: string | null
+          id?: number
+          logo_url?: string | null
+          nome?: string
+          status_cliente?: string | null
+          telefone_contato?: string | null
+        }
+        Relationships: []
+      }
       decisoes_parecer: {
         Row: {
           id: number
@@ -695,6 +806,115 @@ export type Database = {
         }
         Relationships: []
       }
+      projetos: {
+        Row: {
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          id: number
+          macro_regiao_id: number
+          nome_projeto: string
+          orgao_id: number
+          regiao_comercial_id: number
+          temperatura_id: number
+          tipo_comercial_id: number
+          tipo_contratacao_id: number
+          uf: string
+          valor_global: number | null
+          valor_mensal: number | null
+        }
+        Insert: {
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: number
+          macro_regiao_id: number
+          nome_projeto: string
+          orgao_id: number
+          regiao_comercial_id: number
+          temperatura_id: number
+          tipo_comercial_id: number
+          tipo_contratacao_id: number
+          uf: string
+          valor_global?: number | null
+          valor_mensal?: number | null
+        }
+        Update: {
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: number
+          macro_regiao_id?: number
+          nome_projeto?: string
+          orgao_id?: number
+          regiao_comercial_id?: number
+          temperatura_id?: number
+          tipo_comercial_id?: number
+          tipo_contratacao_id?: number
+          uf?: string
+          valor_global?: number | null
+          valor_mensal?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projetos_macro_regiao_id_fkey"
+            columns: ["macro_regiao_id"]
+            isOneToOne: false
+            referencedRelation: "regioes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_orgao_id_fkey"
+            columns: ["orgao_id"]
+            isOneToOne: false
+            referencedRelation: "orgaos_publicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_regiao_comercial_id_fkey"
+            columns: ["regiao_comercial_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_regiao_com"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_temperatura_id_fkey"
+            columns: ["temperatura_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_temperatura"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_tipo_comercial_id_fkey"
+            columns: ["tipo_comercial_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_comercial"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_tipo_contratacao_id_fkey"
+            columns: ["tipo_contratacao_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_contratacao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      regioes: {
+        Row: {
+          id: number
+          nome: string
+        }
+        Insert: {
+          id?: number
+          nome: string
+        }
+        Update: {
+          id?: number
+          nome?: string
+        }
+        Relationships: []
+      }
       setores: {
         Row: {
           id: number
@@ -770,6 +990,36 @@ export type Database = {
         }
         Relationships: []
       }
+      tipos_comercial: {
+        Row: {
+          id: number
+          nome: string
+        }
+        Insert: {
+          id?: number
+          nome: string
+        }
+        Update: {
+          id?: number
+          nome?: string
+        }
+        Relationships: []
+      }
+      tipos_contratacao: {
+        Row: {
+          id: number
+          nome: string
+        }
+        Insert: {
+          id?: number
+          nome: string
+        }
+        Update: {
+          id?: number
+          nome?: string
+        }
+        Relationships: []
+      }
       tipos_orgao: {
         Row: {
           id: number
@@ -786,6 +1036,36 @@ export type Database = {
         Relationships: []
       }
       tipos_parecer: {
+        Row: {
+          id: number
+          nome: string
+        }
+        Insert: {
+          id?: number
+          nome: string
+        }
+        Update: {
+          id?: number
+          nome?: string
+        }
+        Relationships: []
+      }
+      tipos_regiao_com: {
+        Row: {
+          id: number
+          nome: string
+        }
+        Insert: {
+          id?: number
+          nome: string
+        }
+        Update: {
+          id?: number
+          nome?: string
+        }
+        Relationships: []
+      }
+      tipos_temperatura: {
         Row: {
           id: number
           nome: string

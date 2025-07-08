@@ -1,145 +1,195 @@
-
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  BarChart3, 
-  FileText, 
-  Users, 
-  Settings, 
-  User, 
-  Search,
-  Bell,
-  ChevronDown
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {
+  BarChart3,
+  Briefcase,
+  FileText,
+  Settings,
+  Users,
+  User,
+  LogOut,
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { useAuth } from "@/hooks/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: BarChart3, current: false },
-  { name: 'Pipeline', href: '/opportunities', icon: FileText, current: true },
-  { name: 'Clientes', href: '/clients', icon: Users, current: false },
-];
-
-const adminNavigation = [
-  { name: 'Users', href: '/permissions', icon: Users },
-  { name: 'Parâmetros', href: '/parameters', icon: Settings },
-];
-
-export default function Layout({ children }: LayoutProps) {
+const Layout = ({ children }: LayoutProps) => {
+  const { user, signOut } = useAuth();
   const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  const menuItems = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: BarChart3,
+    },
+    {
+      title: "Oportunidades",
+      url: "/opportunities",
+      icon: Briefcase,
+    },
+    {
+      title: "Clientes",
+      url: "/clients",
+      icon: Users,
+    },
+    {
+      title: "Relatórios",
+      url: "#",
+      icon: FileText,
+    },
+    {
+      title: "Configurações",
+      url: "#",
+      icon: Settings,
+    },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100 text-gray-700">
       {/* Sidebar */}
-      <div className={cn("bg-white border-r border-gray-200 transition-all duration-200", isCollapsed ? "w-16" : "w-64")}>
-        {/* Logo */}
-        <div className="flex items-center h-16 px-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">V</span>
+      <Sheet>
+        <SheetTrigger asChild>
+          <aside className="w-60 flex-none h-full border-r hidden sm:block p-4">
+            <div className="mb-4">
+              <h1 className="font-bold text-lg">Menu</h1>
             </div>
-            {!isCollapsed && (
-              <span className="font-semibold text-gray-900">vint.global</span>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="mt-6 px-3">
-          {/* Main Navigation */}
-          <div className="space-y-1">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href || 
-                             (item.href === '/opportunities' && location.pathname.startsWith('/opportunities'));
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                    isActive 
-                      ? "bg-purple-100 text-purple-700" 
-                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                  )}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {!isCollapsed && <span className="ml-3">{item.name}</span>}
-                  {!isCollapsed && isActive && (
-                    <ChevronDown className="w-4 h-4 ml-auto" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Administration */}
-          {!isCollapsed && (
-            <div className="mt-8">
-              <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                ADMINISTRAÇÃO
-              </h3>
-              <div className="mt-2 space-y-1">
-                {adminNavigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    <item.icon className="w-5 h-5" />
-                    <span className="ml-3">{item.name}</span>
-                    <ChevronDown className="w-4 h-4 ml-auto" />
-                  </Link>
+            <ScrollArea className="h-[calc(100vh-100px)]">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {menuItems.map((item) => (
+                    <NavigationMenuItem key={item.title}>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <Button
+                          variant="ghost"
+                          className={`w-full justify-start ${
+                            location.pathname === item.url
+                              ? "font-semibold"
+                              : "font-normal"
+                          }`}
+                          onClick={() => navigate(item.url)}
+                        >
+                          <item.icon className="mr-2 h-4 w-4" />
+                          {item.title}
+                        </Button>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </ScrollArea>
+            <Separator />
+            <div className="p-4">
+              <div className="flex items-center space-x-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
+                  <AvatarFallback>{user?.full_name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium">{user?.full_name}</p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                className="w-full justify-start mt-2"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
+            </div>
+          </aside>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-60">
+          <SheetHeader>
+            <SheetTitle>Menu</SheetTitle>
+            <SheetDescription>
+              Navegue pelas opções do sistema.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-100px)]">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {menuItems.map((item) => (
+                  <NavigationMenuItem key={item.title}>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start ${
+                          location.pathname === item.url
+                            ? "font-semibold"
+                            : "font-normal"
+                        }`}
+                        onClick={() => navigate(item.url)}
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.title}
+                      </Button>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
                 ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </ScrollArea>
+          <Separator />
+          <div className="p-4">
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.avatar_url} alt={user?.full_name} />
+                <AvatarFallback>{user?.full_name?.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">{user?.full_name}</p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
             </div>
-          )}
-        </nav>
-      </div>
+            <Button
+              variant="ghost"
+              className="w-full justify-start mt-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6">
-          <div className="flex items-center space-x-4 flex-1">
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="search"
-                placeholder="Search (Ctrl+/)"
-                className="pl-10 w-80 bg-gray-50 border-gray-200"
-              />
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Bell className="w-5 h-5" />
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                1
-              </span>
-            </Button>
-            
-            <Link to="/profile" className="flex items-center space-x-3">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src="" />
-                <AvatarFallback className="bg-purple-600 text-white">JD</AvatarFallback>
-              </Avatar>
-            </Link>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <main className="flex-1 overflow-auto">
-          {children}
-        </main>
-      </div>
+      <main className="flex-1 p-4">
+        <div className="container mx-auto">{children}</div>
+      </main>
     </div>
   );
-}
+};
+
+export default Layout;

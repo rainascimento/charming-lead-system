@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Opportunities from "./pages/Opportunities";
 import NewOpportunity from "./pages/NewOpportunity";
 import OpportunityDetail from "./pages/OpportunityDetail";
+import Clients from "./pages/Clients";
 import Profile from "./pages/Profile";
 import Permissions from "./pages/Permissions";
 import NotFound from "./pages/NotFound";
@@ -63,6 +64,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <OpportunityDetail />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/clients" 
+              element={
+                <ProtectedRoute>
+                  <Clients />
                 </ProtectedRoute>
               } 
             />
