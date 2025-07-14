@@ -1,0 +1,25 @@
+{
+  "data": {
+    "adapter": {
+      "home": "C:\\Users\\raisilva\\Desktop\\charming-lead-system\\.bridge\\Downloader Adapter"
+    },
+    "bridge": {
+      "log": {
+        "debug": false,
+        "jsonLog": true,
+        "newLog": true
+      }
+    },
+    "downloads": {
+      "coverity": {
+        "url": "https://tool-download.polaris.blackduck.com/cov_thin_client-win64-2025.3.0.tar.gz?Expires=1752528308&KeyName=polarisng-tools-cdn-prod&Signature=paO2fecuNKqgYOpSZgDrv9zPH-U="
+      },
+      "detect": {
+        "url": "https://tool-download.polaris.blackduck.com/detect-10.4.0.jar?Expires=1752528312&KeyName=polarisng-tools-cdn-prod&Signature=HPgleLrvKfquKXqf16zHaaS8BCA="
+      },
+      "sigma": {
+        "url": "https://tool-download.polaris.blackduck.com/sigma-win64-2025.6.0.exe?Expires=1752528309&KeyName=polarisng-tools-cdn-prod&Signature=-7ysG-2Oqu3F9RrZYDuiLCeN-OM="
+      }
+    }
+  }
+}

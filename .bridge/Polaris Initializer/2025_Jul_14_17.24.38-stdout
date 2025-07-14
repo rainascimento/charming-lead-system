@@ -1,0 +1,4 @@
+C:\Users\raisilva\AppData\Roaming\BlackDuck\desktop\controller\installedtools\bridge\3.5.1\adapters\polaris-initializer\versions\1.0.112/polaris-initializer C:\Users\raisilva\Desktop\charming-lead-system\.bridge\Polaris Initializer\data.json
+{"level":"info","logger":"Polaris Initializer","msg":"Branch doesn't exist. Will create new branch as 'polaris.onboarding' is set to 'true'","time":"2025-07-14 17:24:40.4748 -03"}
+{"level":"info","logger":"Polaris Initializer","msg":"Successfully created test for \"SAST(sastFull)\" assessment. The short test ID is \"XWAY51G\"","time":"2025-07-14 17:24:41.6840 -03"}
+{"level":"info","logger":"Polaris Initializer","msg":"Successfully created test for \"SCA(scaPackage)\" assessment. The short test ID is \"DKOTV0D\"","time":"2025-07-14 17:24:41.6846 -03"}

@@ -1,0 +1,19 @@
+C:\Users\raisilva\AppData\Roaming\BlackDuck\desktop\controller\installedtools\bridge\3.5.1\adapters\polaris-controller\versions\0.2.181/polaris-controller C:\Users\raisilva\Desktop\charming-lead-system\.bridge\Polaris Controller\data.json
+{"level":"info","logger":"Polaris Controller","msg":"Running for \"sast\" assessment with scan type \"sastFull\"","time":"2025-07-14 17:24:42.1425 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"fetching recommended \"coverity\" tool info...","time":"2025-07-14 17:24:42.1562 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"checking \"coverity\" tool installation inside bridge home directory: C:\\Users\\raisilva\\.blackduck\\bridge\\tools\\cov-thin-client\\2025.3.0","time":"2025-07-14 17:24:43.3186 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"Checking tool version for \"cov_thin_client\" in \"C:\\\\Users\\\\raisilva\\\\.blackduck\\\\bridge\\\\tools\\\\cov-thin-client\\\\2025.3.0\"","time":"2025-07-14 17:24:43.3186 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"either \"coverity\" tool version \"2025.3.0\" not found or unable to detect existing installation, will schedule new installation","time":"2025-07-14 17:24:43.3186 -03"}
+cov_thin_client descriptorID:  cov_thin_client:2025.3.0:win64:tar.gz
+{"level":"info","logger":"Polaris Controller","msg":"fetching recommended \"Sigma\" tool info...","time":"2025-07-14 17:24:44.1557 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"checking \"Sigma\" tool installation inside bridge home directory: C:\\Users\\raisilva\\.blackduck\\bridge\\tools\\sigma\\2025.6.0","time":"2025-07-14 17:24:44.3854 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"Checking tool version for \"sigma\" in \"C:\\\\Users\\\\raisilva\\\\.blackduck\\\\bridge\\\\tools\\\\sigma\\\\2025.6.0\"","time":"2025-07-14 17:24:44.3860 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"either \"Sigma\" tool version \"2025.6.0\" not found or unable to detect existing installation, will schedule new installation","time":"2025-07-14 17:24:44.3860 -03"}
+sigma descriptorID:  sigma:2025.6.0:win64:exe
+{"level":"info","logger":"Polaris Controller","msg":"Running for \"sca\" assessment with scan type \"scaPackage\"","time":"2025-07-14 17:24:45.1744 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"fetching recommended \"detect\" tool info...","time":"2025-07-14 17:24:45.1744 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"checking \"detect\" tool installation inside bridge home directory: C:\\Users\\raisilva\\.blackduck\\bridge\\tools\\blackduck-detect\\10.4.0","time":"2025-07-14 17:24:45.4149 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"Running command:C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\java8path\\java.exe -version","time":"2025-07-14 17:24:45.4246 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"Checking tool version for \"detect\" in \"C:\\\\Users\\\\raisilva\\\\.blackduck\\\\bridge\\\\tools\\\\blackduck-detect\\\\10.4.0\"","time":"2025-07-14 17:24:47.1348 -03"}
+{"level":"info","logger":"Polaris Controller","msg":"either \"detect\" tool version \"10.4.0\" not found or unable to detect existing installation, will schedule new installation","time":"2025-07-14 17:24:47.1405 -03"}
+detect descriptorID:  detect:10.4.0:win64:jar

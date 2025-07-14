@@ -1,0 +1,102 @@
+{
+  "configId": {
+    "id": "a02915b1-1a8c-4caa-9ae6-d68eb9e1783b"
+  },
+  "scanType": {
+    "type": 1,
+    "name": "Polaris",
+    "supportsDiffing": true
+  },
+  "coverityConfig": {
+    "configFilePath": {
+      "source": {
+        "type": 8
+      }
+    },
+    "additionalAnalysisArguments": {
+      "source": {
+        "type": 8
+      }
+    }
+  },
+  "blackDuckConfig": {
+    "additionalArguments": {
+      "source": {
+        "type": 8
+      }
+    },
+    "configFilePath": {
+      "source": {
+        "type": 8
+      }
+    },
+    "searchDepth": {
+      "source": {
+        "type": 8
+      }
+    }
+  },
+  "bridgeConfig": {
+    "installationLocation": {
+      "source": {
+        "type": 8
+      }
+    },
+    "additionalArguments": {
+      "source": {
+        "type": 8
+      }
+    },
+    "configFilePath": {
+      "source": {
+        "type": 8
+      }
+    },
+    "scanTypes": [
+      0,
+      1
+    ]
+  },
+  "issueSource": {
+    "reference": {
+      "info": {
+        "name": "CRM",
+        "id": "a0fd62ff-b562-4450-921e-c1d56d49129c",
+        "displayName": "CRM",
+        "depth": 2
+      },
+      "parent": {
+        "info": {
+          "name": "Vint Global",
+          "id": "69347b38-4d42-4799-878b-b8b4e0b9150e",
+          "displayName": "Vint Global",
+          "depth": 1,
+          "localId": "polaris.blackduck.com--Vint Global-69347b38-4d42-4799-878b-b8b4e0b9150e"
+        }
+      }
+    }
+  },
+  "buildConfig": {
+    "buildCommand": {
+      "source": {
+        "type": 8
+      }
+    },
+    "cleanCommand": {
+      "source": {
+        "type": 8
+      }
+    }
+  },
+  "workingDirectory": {
+    "value": "C:\\Users\\raisilva\\Desktop\\charming-lead-system",
+    "source": {
+      "type": 8
+    }
+  },
+  "path": {
+    "source": {
+      "type": 8
+    }
+  }
+}
