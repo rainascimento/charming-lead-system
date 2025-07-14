@@ -18,6 +18,9 @@ import OpportunityDetail from "./pages/OpportunityDetail";
 import Profile from "./pages/Profile";
 import Permissions from "./pages/Permissions";
 import NotFound from "./pages/NotFound";
+import CadastroOportunidade from "./pages/CadastroOportunidade";
+
+
 
 const queryClient = new QueryClient();
 
@@ -50,14 +53,17 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
-            <Route 
+       
+             <Route 
               path="/opportunities/new" 
               element={
                 <ProtectedRoute>
-                  <NewOpportunity />
+                  <CadastroOportunidade />
                 </ProtectedRoute>
               } 
             />
+
+
             <Route 
               path="/opportunities/:id" 
               element={
