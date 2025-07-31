@@ -1,6 +1,5 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -18,6 +17,52 @@ export interface Item {
   updated_at?: string;
 }
 
+const mockItemsByLot: { [key: string]: Item[] } = {
+  '1': [
+    {
+      id: '1',
+      lot_id: '1',
+      item_number: 1,
+      description: 'Licença de software de gestão escolar',
+      unit: 'UN',
+      quantity: 500,
+      unit_price: 120.00,
+      total_price: 60000.00,
+      specifications: 'Software completo para gestão acadêmica',
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-30T14:30:00Z'
+    },
+    {
+      id: '2',
+      lot_id: '1',
+      item_number: 2,
+      description: 'Suporte técnico anual',
+      unit: 'SV',
+      quantity: 1,
+      unit_price: 15000.00,
+      total_price: 15000.00,
+      specifications: 'Suporte 24x7 durante 12 meses',
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-30T14:30:00Z'
+    }
+  ],
+  '2': [
+    {
+      id: '3',
+      lot_id: '2',
+      item_number: 1,
+      description: 'Módulo de biblioteca digital',
+      unit: 'UN',
+      quantity: 100,
+      unit_price: 80.00,
+      total_price: 8000.00,
+      specifications: 'Sistema de gerenciamento de biblioteca',
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-30T14:30:00Z'
+    }
+  ]
+};
+
 export const useItems = (lotId: string) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -26,32 +71,13 @@ export const useItems = (lotId: string) => {
     queryKey: ['items', lotId],
     queryFn: async () => {
       console.log('Fetching items for lot:', lotId);
-      const { data, error } = await supabase
-        .from('itens')
-        .select('*')
-        .eq('lote_id', Number(lotId))
-        .order('id', { ascending: true });
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      if (error) {
-        console.error('Error fetching items:', error);
-        throw error;
-      }
-
-      console.log('Fetched items:', data);
-      // Mapear os dados do banco para o formato esperado
-      return data.map(item => ({
-        id: item.id.toString(),
-        lot_id: item.lote_id.toString(),
-        item_number: 1, // Será incrementado conforme necessário
-        description: item.nome,
-        unit: 'UN', // Valor padrão, pode ser ajustado
-        quantity: item.quantidade || 0,
-        unit_price: Number(item.valor_unitario) || 0,
-        total_price: (item.quantidade || 0) * (Number(item.valor_unitario) || 0),
-        specifications: item.descricao || '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })) as Item[];
+      const items = mockItemsByLot[lotId] || [];
+      console.log('Fetched items:', items);
+      return items;
     },
     enabled: !!user && !!lotId,
   });
@@ -60,29 +86,28 @@ export const useItems = (lotId: string) => {
     mutationFn: async (newItem: Omit<Item, 'id' | 'created_at' | 'updated_at'>) => {
       console.log('Creating item:', newItem);
       
-      // Mapear para o formato do banco
-      const itemData = {
-        lote_id: Number(newItem.lot_id),
-        nome: newItem.description,
-        descricao: newItem.specifications || '',
-        quantidade: newItem.quantity || 0,
-        valor_unitario: newItem.unit_price || 0,
-        unidade_id: 1, // Valor padrão, ajustar conforme necessário
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      const mockId = String(Object.values(mockItemsByLot).flat().length + 1);
+      const now = new Date().toISOString();
+      
+      const item: Item = {
+        ...newItem,
+        id: mockId,
+        total_price: (newItem.quantity || 0) * (newItem.unit_price || 0),
+        created_at: now,
+        updated_at: now,
       };
 
-      const { data, error } = await supabase
-        .from('itens')
-        .insert([itemData])
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating item:', error);
-        throw error;
+      // Adicionar à lista mock
+      if (!mockItemsByLot[newItem.lot_id]) {
+        mockItemsByLot[newItem.lot_id] = [];
       }
+      mockItemsByLot[newItem.lot_id].push(item);
 
-      console.log('Created item:', data);
-      return data;
+      console.log('Created item:', item);
+      return item;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['items', lotId] });
@@ -98,27 +123,25 @@ export const useItems = (lotId: string) => {
     mutationFn: async ({ id, ...updates }: Partial<Item> & { id: string }) => {
       console.log('Updating item:', id, updates);
       
-      // Mapear para o formato do banco
-      const updateData: any = {};
-      if (updates.description) updateData.nome = updates.description;
-      if (updates.specifications) updateData.descricao = updates.specifications;
-      if (updates.quantity !== undefined) updateData.quantidade = updates.quantity;
-      if (updates.unit_price !== undefined) updateData.valor_unitario = updates.unit_price;
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      const { data, error } = await supabase
-        .from('itens')
-        .update(updateData)
-        .eq('id', Number(id))
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating item:', error);
-        throw error;
+      // Simular atualização
+      for (const items of Object.values(mockItemsByLot)) {
+        const index = items.findIndex(item => item.id === id);
+        if (index !== -1) {
+          items[index] = {
+            ...items[index],
+            ...updates,
+            total_price: (updates.quantity ?? items[index].quantity ?? 0) * (updates.unit_price ?? items[index].unit_price ?? 0),
+            updated_at: new Date().toISOString(),
+          };
+          console.log('Updated item:', items[index]);
+          return items[index];
+        }
       }
 
-      console.log('Updated item:', data);
-      return data;
+      throw new Error('Item not found');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['items', lotId] });
@@ -133,17 +156,21 @@ export const useItems = (lotId: string) => {
   const deleteItem = useMutation({
     mutationFn: async (id: string) => {
       console.log('Deleting item:', id);
-      const { error } = await supabase
-        .from('itens')
-        .delete()
-        .eq('id', Number(id));
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      if (error) {
-        console.error('Error deleting item:', error);
-        throw error;
+      // Simular exclusão
+      for (const items of Object.values(mockItemsByLot)) {
+        const index = items.findIndex(item => item.id === id);
+        if (index !== -1) {
+          items.splice(index, 1);
+          console.log('Deleted item:', id);
+          return;
+        }
       }
 
-      console.log('Deleted item:', id);
+      throw new Error('Item not found');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['items', lotId] });

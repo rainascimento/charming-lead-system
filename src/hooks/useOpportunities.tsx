@@ -1,6 +1,5 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -26,6 +25,72 @@ export interface Opportunity {
   updated_at?: string;
 }
 
+const mockOpportunities: Opportunity[] = [
+  {
+    id: '1',
+    title: 'Sistema de Gestão Educacional',
+    description: 'Contratação de sistema integrado para gestão educacional',
+    organ: 'Ministério da Educação',
+    bidding_number: '23000.000001/2024-11',
+    bidding_type: 'pregao_eletronico',
+    execution_mode: 'menor_preco',
+    estimated_value: 850000,
+    publication_date: '2024-08-01',
+    deadline_date: '2024-09-30',
+    opening_date: '2024-08-15',
+    status: 'analise_tecnica',
+    created_by: 'mock-user-id',
+    assigned_to: 'mock-user-id',
+    category: 'tecnologia',
+    tags: ['TI', 'Educação'],
+    notes: 'Oportunidade estratégica para o setor educacional',
+    created_at: '2024-07-15T10:00:00Z',
+    updated_at: '2024-07-30T14:30:00Z'
+  },
+  {
+    id: '2',
+    title: 'Equipamentos Médicos Hospitalares',
+    description: 'Aquisição de equipamentos médicos para hospitais públicos',
+    organ: 'Ministério da Saúde',
+    bidding_number: '25000.000002/2024-22',
+    bidding_type: 'concorrencia',
+    execution_mode: 'melhor_tecnica',
+    estimated_value: 1200000,
+    publication_date: '2024-08-05',
+    deadline_date: '2024-10-15',
+    opening_date: '2024-08-20',
+    status: 'parecer',
+    created_by: 'mock-user-id',
+    assigned_to: 'mock-user-id',
+    category: 'saude',
+    tags: ['Saúde', 'Equipamentos'],
+    notes: 'Alto valor estratégico para portfólio de saúde',
+    created_at: '2024-07-20T09:15:00Z',
+    updated_at: '2024-07-28T16:45:00Z'
+  },
+  {
+    id: '3',
+    title: 'Infraestrutura Tecnológica Municipal',
+    description: 'Modernização da infraestrutura de TI da prefeitura',
+    organ: 'Prefeitura de São Paulo',
+    bidding_number: '31000.000003/2024-33',
+    bidding_type: 'pregao_eletronico',
+    execution_mode: 'menor_preco',
+    estimated_value: 950000,
+    publication_date: '2024-08-10',
+    deadline_date: '2024-11-10',
+    opening_date: '2024-08-25',
+    status: 'identificacao',
+    created_by: 'mock-user-id',
+    assigned_to: 'mock-user-id',
+    category: 'tecnologia',
+    tags: ['TI', 'Municipal'],
+    notes: 'Oportunidade de expansão no mercado municipal',
+    created_at: '2024-07-25T11:20:00Z',
+    updated_at: '2024-07-29T13:10:00Z'
+  }
+];
+
 export const useOpportunities = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -33,43 +98,13 @@ export const useOpportunities = () => {
   const { data: opportunities = [], isLoading, error } = useQuery({
     queryKey: ['opportunities'],
     queryFn: async () => {
-      console.log('Fetching opportunities from database...');
-      const { data, error } = await supabase
-        .from('oportunidades')
-        .select(`
-          *,
-          orgaos_publicos(nome, sigla)
-        `)
-        .order('id', { ascending: false });
+      console.log('Fetching opportunities...');
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      if (error) {
-        console.error('Error fetching opportunities:', error);
-        throw error;
-      }
-
-      console.log('Fetched opportunities:', data);
-      // Mapear os dados do banco para o formato esperado
-      return data.map(opp => ({
-        id: opp.id.toString(),
-        title: opp.objeto,
-        description: opp.objeto,
-        organ: opp.orgaos_publicos?.nome || 'Órgão não informado',
-        bidding_number: opp.numero_processo,
-        bidding_type: 'pregao_eletronico', // Valor padrão
-        execution_mode: 'menor_preco', // Valor padrão
-        estimated_value: 0, // Não disponível no schema atual
-        publication_date: opp.data_abertura,
-        deadline_date: opp.data_entrega,
-        opening_date: opp.data_abertura,
-        status: getStatusFromPipeline(opp.fase_pipeline_id),
-        created_by: user?.id,
-        assigned_to: user?.id,
-        category: 'outros',
-        tags: [],
-        notes: '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })) as Opportunity[];
+      console.log('Fetched opportunities:', mockOpportunities);
+      return mockOpportunities;
     },
     enabled: !!user,
   });
@@ -78,38 +113,24 @@ export const useOpportunities = () => {
     mutationFn: async (newOpportunity: Omit<Opportunity, 'id' | 'created_at' | 'updated_at'>) => {
       console.log('Creating opportunity:', newOpportunity);
       
-      // Para criar uma oportunidade, precisamos de dados mínimos
-      // Como o schema é complexo, vou usar valores padrão para campos obrigatórios
-      const opportunityData = {
-        objeto: newOpportunity.title,
-        numero_processo: newOpportunity.bidding_number || `PROC-${Date.now()}`,
-        data_abertura: newOpportunity.opening_date || new Date().toISOString().split('T')[0],
-        data_entrega: newOpportunity.deadline_date || new Date().toISOString().split('T')[0],
-        uasg: '000000', // Valor padrão
-        uf: 'SP', // Valor padrão
-        orgao_id: 1, // Valor padrão - ajustar conforme necessário
-        portal_id: 1, // Valor padrão
-        esfera_id: 1, // Valor padrão
-        modalidade_id: 1, // Valor padrão
-        mercado_id: 1, // Valor padrão
-        setor_id: 1, // Valor padrão
-        fase_pipeline_id: 1, // Identificação
-        status_id: 1, // Valor padrão
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const mockId = String(mockOpportunities.length + 1);
+      const now = new Date().toISOString();
+      
+      const opportunity: Opportunity = {
+        ...newOpportunity,
+        id: mockId,
+        created_at: now,
+        updated_at: now,
       };
 
-      const { data, error } = await supabase
-        .from('oportunidades')
-        .insert([opportunityData])
-        .select()
-        .single();
+      // Adicionar à lista mock (simulação)
+      mockOpportunities.push(opportunity);
 
-      if (error) {
-        console.error('Error creating opportunity:', error);
-        throw error;
-      }
-
-      console.log('Created opportunity:', data);
-      return data;
+      console.log('Created opportunity:', opportunity);
+      return opportunity;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['opportunities'] });
@@ -125,27 +146,21 @@ export const useOpportunities = () => {
     mutationFn: async ({ id, ...updates }: Partial<Opportunity> & { id: string }) => {
       console.log('Updating opportunity:', id, updates);
       
-      // Mapear apenas os campos que podem ser atualizados
-      const updateData: any = {};
-      if (updates.title) updateData.objeto = updates.title;
-      if (updates.bidding_number) updateData.numero_processo = updates.bidding_number;
-      if (updates.opening_date) updateData.data_abertura = updates.opening_date;
-      if (updates.deadline_date) updateData.data_entrega = updates.deadline_date;
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      const { data, error } = await supabase
-        .from('oportunidades')
-        .update(updateData)
-        .eq('id', Number(id))
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating opportunity:', error);
-        throw error;
+      // Simular atualização
+      const index = mockOpportunities.findIndex(opp => opp.id === id);
+      if (index !== -1) {
+        mockOpportunities[index] = {
+          ...mockOpportunities[index],
+          ...updates,
+          updated_at: new Date().toISOString(),
+        };
       }
 
-      console.log('Updated opportunity:', data);
-      return data;
+      console.log('Updated opportunity:', mockOpportunities[index]);
+      return mockOpportunities[index];
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['opportunities'] });
@@ -160,14 +175,14 @@ export const useOpportunities = () => {
   const deleteOpportunity = useMutation({
     mutationFn: async (id: string) => {
       console.log('Deleting opportunity:', id);
-      const { error } = await supabase
-        .from('oportunidades')
-        .delete()
-        .eq('id', Number(id));
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      if (error) {
-        console.error('Error deleting opportunity:', error);
-        throw error;
+      // Simular exclusão
+      const index = mockOpportunities.findIndex(opp => opp.id === id);
+      if (index !== -1) {
+        mockOpportunities.splice(index, 1);
       }
 
       console.log('Deleted opportunity:', id);
@@ -211,43 +226,18 @@ export const useOpportunity = (id: string) => {
     queryKey: ['opportunity', id],
     queryFn: async () => {
       console.log('Fetching opportunity:', id);
-      const { data, error } = await supabase
-        .from('oportunidades')
-        .select(`
-          *,
-          orgaos_publicos(nome, sigla)
-        `)
-        .eq('id', Number(id))
-        .single();
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      if (error) {
-        console.error('Error fetching opportunity:', error);
-        throw error;
+      const opportunity = mockOpportunities.find(opp => opp.id === id);
+      
+      if (!opportunity) {
+        throw new Error('Opportunity not found');
       }
 
-      console.log('Fetched opportunity:', data);
-      // Mapear para o formato esperado
-      return {
-        id: data.id.toString(),
-        title: data.objeto,
-        description: data.objeto,
-        organ: data.orgaos_publicos?.nome || 'Órgão não informado',
-        bidding_number: data.numero_processo,
-        bidding_type: 'pregao_eletronico',
-        execution_mode: 'menor_preco',
-        estimated_value: 0,
-        publication_date: data.data_abertura,
-        deadline_date: data.data_entrega,
-        opening_date: data.data_abertura,
-        status: getStatusFromPipeline(data.fase_pipeline_id),
-        created_by: user?.id,
-        assigned_to: user?.id,
-        category: 'outros',
-        tags: [],
-        notes: '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      } as Opportunity;
+      console.log('Fetched opportunity:', opportunity);
+      return opportunity;
     },
     enabled: !!user && !!id,
   });

@@ -1,6 +1,5 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -13,6 +12,55 @@ export interface Lot {
   updated_at?: string;
 }
 
+const mockLotsByOpportunity: { [key: string]: Lot[] } = {
+  '1': [
+    {
+      id: '1',
+      opportunity_id: '1',
+      name: 'Lote 1 - Software Base',
+      description: 'Sistema principal de gestão educacional',
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-30T14:30:00Z'
+    },
+    {
+      id: '2',
+      opportunity_id: '1',
+      name: 'Lote 2 - Módulos Adicionais',
+      description: 'Módulos complementares e integrações',
+      created_at: '2024-07-15T10:00:00Z',
+      updated_at: '2024-07-30T14:30:00Z'
+    }
+  ],
+  '2': [
+    {
+      id: '3',
+      opportunity_id: '2',
+      name: 'Lote Único - Equipamentos',
+      description: 'Conjunto completo de equipamentos médicos',
+      created_at: '2024-07-20T09:15:00Z',
+      updated_at: '2024-07-28T16:45:00Z'
+    }
+  ],
+  '3': [
+    {
+      id: '4',
+      opportunity_id: '3',
+      name: 'Lote 1 - Hardware',
+      description: 'Servidores e equipamentos de rede',
+      created_at: '2024-07-25T11:20:00Z',
+      updated_at: '2024-07-29T13:10:00Z'
+    },
+    {
+      id: '5',
+      opportunity_id: '3',
+      name: 'Lote 2 - Software',
+      description: 'Licenças e sistemas operacionais',
+      created_at: '2024-07-25T11:20:00Z',
+      updated_at: '2024-07-29T13:10:00Z'
+    }
+  ]
+};
+
 export const useLots = (opportunityId: string) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -21,27 +69,13 @@ export const useLots = (opportunityId: string) => {
     queryKey: ['lots', opportunityId],
     queryFn: async () => {
       console.log('Fetching lots for opportunity:', opportunityId);
-      const { data, error } = await supabase
-        .from('lotes')
-        .select('*')
-        .eq('oportunidade_id', Number(opportunityId))
-        .order('id', { ascending: true });
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      if (error) {
-        console.error('Error fetching lots:', error);
-        throw error;
-      }
-
-      console.log('Fetched lots:', data);
-      // Mapear os dados do banco para o formato esperado
-      return data.map(lot => ({
-        id: lot.id.toString(),
-        opportunity_id: lot.oportunidade_id.toString(),
-        name: lot.nome,
-        description: lot.descricao || '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })) as Lot[];
+      const lots = mockLotsByOpportunity[opportunityId] || [];
+      console.log('Fetched lots:', lots);
+      return lots;
     },
     enabled: !!user && !!opportunityId,
   });
@@ -50,26 +84,27 @@ export const useLots = (opportunityId: string) => {
     mutationFn: async (newLot: Omit<Lot, 'id' | 'created_at' | 'updated_at'>) => {
       console.log('Creating lot:', newLot);
       
-      // Mapear para o formato do banco
-      const lotData = {
-        oportunidade_id: Number(newLot.opportunity_id),
-        nome: newLot.name,
-        descricao: newLot.description || '',
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      const mockId = String(Object.values(mockLotsByOpportunity).flat().length + 1);
+      const now = new Date().toISOString();
+      
+      const lot: Lot = {
+        ...newLot,
+        id: mockId,
+        created_at: now,
+        updated_at: now,
       };
 
-      const { data, error } = await supabase
-        .from('lotes')
-        .insert([lotData])
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating lot:', error);
-        throw error;
+      // Adicionar à lista mock
+      if (!mockLotsByOpportunity[newLot.opportunity_id]) {
+        mockLotsByOpportunity[newLot.opportunity_id] = [];
       }
+      mockLotsByOpportunity[newLot.opportunity_id].push(lot);
 
-      console.log('Created lot:', data);
-      return data;
+      console.log('Created lot:', lot);
+      return lot;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lots', opportunityId] });
@@ -85,25 +120,24 @@ export const useLots = (opportunityId: string) => {
     mutationFn: async ({ id, ...updates }: Partial<Lot> & { id: string }) => {
       console.log('Updating lot:', id, updates);
       
-      // Mapear para o formato do banco
-      const updateData: any = {};
-      if (updates.name) updateData.nome = updates.name;
-      if (updates.description !== undefined) updateData.descricao = updates.description;
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      const { data, error } = await supabase
-        .from('lotes')
-        .update(updateData)
-        .eq('id', Number(id))
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating lot:', error);
-        throw error;
+      // Simular atualização
+      for (const lots of Object.values(mockLotsByOpportunity)) {
+        const index = lots.findIndex(lot => lot.id === id);
+        if (index !== -1) {
+          lots[index] = {
+            ...lots[index],
+            ...updates,
+            updated_at: new Date().toISOString(),
+          };
+          console.log('Updated lot:', lots[index]);
+          return lots[index];
+        }
       }
 
-      console.log('Updated lot:', data);
-      return data;
+      throw new Error('Lot not found');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lots', opportunityId] });
@@ -118,17 +152,21 @@ export const useLots = (opportunityId: string) => {
   const deleteLot = useMutation({
     mutationFn: async (id: string) => {
       console.log('Deleting lot:', id);
-      const { error } = await supabase
-        .from('lotes')
-        .delete()
-        .eq('id', Number(id));
+      
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      if (error) {
-        console.error('Error deleting lot:', error);
-        throw error;
+      // Simular exclusão
+      for (const lots of Object.values(mockLotsByOpportunity)) {
+        const index = lots.findIndex(lot => lot.id === id);
+        if (index !== -1) {
+          lots.splice(index, 1);
+          console.log('Deleted lot:', id);
+          return;
+        }
       }
 
-      console.log('Deleted lot:', id);
+      throw new Error('Lot not found');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['lots', opportunityId] });

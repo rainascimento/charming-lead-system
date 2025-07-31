@@ -1,6 +1,5 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 export interface OrgaoPublico {
   id: number;
@@ -18,86 +17,115 @@ export interface OrgaoPublico {
   valor_total_oportunidades: number;
 }
 
+const mockOrgaosPublicos: OrgaoPublico[] = [
+  {
+    id: 1,
+    nome: "Ministério da Educação",
+    sigla: "MEC",
+    logo_orgao: null,
+    cnpj: "00.394.445/0001-07",
+    email_institucional: "contato@mec.gov.br",
+    site_oficial: "https://www.gov.br/mec/pt-br",
+    esfera_adm_id: 1,
+    status_orgao_id: 1,
+    tipo_orgao_id: 1,
+    oportunidades_count: 15,
+    projetos_count: 8,
+    valor_total_oportunidades: 2500000
+  },
+  {
+    id: 2,
+    nome: "Ministério da Saúde",
+    sigla: "MS",
+    logo_orgao: null,
+    cnpj: "25.351.920/0001-58",
+    email_institucional: "contato@saude.gov.br",
+    site_oficial: "https://www.gov.br/saude/pt-br",
+    esfera_adm_id: 1,
+    status_orgao_id: 1,
+    tipo_orgao_id: 1,
+    oportunidades_count: 22,
+    projetos_count: 12,
+    valor_total_oportunidades: 5800000
+  },
+  {
+    id: 3,
+    nome: "Prefeitura de São Paulo",
+    sigla: "PMSP",
+    logo_orgao: null,
+    cnpj: "46.395.000/0001-39",
+    email_institucional: "contato@prefeitura.sp.gov.br",
+    site_oficial: "https://www.capital.sp.gov.br/",
+    esfera_adm_id: 3,
+    status_orgao_id: 1,
+    tipo_orgao_id: 2,
+    oportunidades_count: 18,
+    projetos_count: 9,
+    valor_total_oportunidades: 3200000
+  }
+];
+
 export const useOrgaosPublicos = () => {
   return useQuery({
     queryKey: ["orgaos-publicos"],
     queryFn: async () => {
       console.log("Fetching órgãos públicos...");
       
-      const { data, error } = await supabase
-        .from("orgaos_publicos")
-        .select(`
-          id,
-          nome,
-          sigla,
-          logo_orgao,
-          cnpj,
-          email_institucional,
-          site_oficial,
-          esfera_adm_id,
-          status_orgao_id,
-          tipo_orgao_id
-        `);
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      if (error) {
-        console.error("Error fetching órgãos públicos:", error);
-        throw error;
-      }
-
-      // Para cada órgão, buscar estatísticas
-      const orgaosWithStats = await Promise.all(
-        (data || []).map(async (orgao) => {
-          // Contar oportunidades
-          const { count: oportunidadesCount } = await supabase
-            .from("oportunidades")
-            .select("*", { count: "exact", head: true })
-            .eq("orgao_id", orgao.id);
-
-          // Contar projetos
-          const { count: projetosCount } = await supabase
-            .from("projetos")
-            .select("*", { count: "exact", head: true })
-            .eq("orgao_id", orgao.id);
-
-          // Calcular valor total das oportunidades através dos lotes
-          const { data: lotes } = await supabase
-            .from("lotes")
-            .select(`
-              id,
-              oportunidade_id,
-              itens (
-                valor_unitario,
-                quantidade
-              )
-            `)
-            .in("oportunidade_id", 
-              await supabase
-                .from("oportunidades")
-                .select("id")
-                .eq("orgao_id", orgao.id)
-                .then(({ data }) => data?.map(o => o.id) || [])
-            );
-
-          let valorTotal = 0;
-          lotes?.forEach(lote => {
-            lote.itens?.forEach((item: any) => {
-              valorTotal += (item.valor_unitario || 0) * (item.quantidade || 0);
-            });
-          });
-
-          return {
-            ...orgao,
-            oportunidades_count: oportunidadesCount || 0,
-            projetos_count: projetosCount || 0,
-            valor_total_oportunidades: valorTotal,
-          };
-        })
-      );
-
-      console.log("Órgãos públicos fetched:", orgaosWithStats);
-      return orgaosWithStats;
+      console.log("Órgãos públicos fetched:", mockOrgaosPublicos);
+      return mockOrgaosPublicos;
     },
   });
+};
+
+const mockOportunidadesPorOrgao: { [key: number]: any[] } = {
+  1: [
+    {
+      id: 1,
+      numero_processo: "23000.000001/2024-11",
+      objeto: "Contratação de sistema de gestão educacional",
+      data_abertura: "2024-08-15",
+      data_entrega: "2024-09-30",
+      uf: "DF",
+      uasg: "154080",
+      modalidades: { nome: "Pregão Eletrônico" },
+      status_oportunidade: { nome: "Publicado" },
+      fases_pipeline: { nome: "Análise Técnica" },
+      valor_total: 850000
+    }
+  ],
+  2: [
+    {
+      id: 2,
+      numero_processo: "25000.000002/2024-22",
+      objeto: "Aquisição de equipamentos médicos",
+      data_abertura: "2024-08-20",
+      data_entrega: "2024-10-15",
+      uf: "DF",
+      uasg: "251003",
+      modalidades: { nome: "Concorrência" },
+      status_oportunidade: { nome: "Publicado" },
+      fases_pipeline: { nome: "Parecer" },
+      valor_total: 1200000
+    }
+  ],
+  3: [
+    {
+      id: 3,
+      numero_processo: "31000.000003/2024-33",
+      objeto: "Modernização da infraestrutura tecnológica",
+      data_abertura: "2024-08-25",
+      data_entrega: "2024-11-10",
+      uf: "SP",
+      uasg: "925503",
+      modalidades: { nome: "Pregão Eletrônico" },
+      status_oportunidade: { nome: "Publicado" },
+      fases_pipeline: { nome: "Identificação" },
+      valor_total: 950000
+    }
+  ]
 };
 
 export const useOrgaoOportunidades = (orgaoId: number) => {
@@ -106,52 +134,12 @@ export const useOrgaoOportunidades = (orgaoId: number) => {
     queryFn: async () => {
       console.log(`Fetching oportunidades for órgão ${orgaoId}...`);
       
-      const { data, error } = await supabase
-        .from("oportunidades")
-        .select(`
-          id,
-          numero_processo,
-          objeto,
-          data_abertura,
-          data_entrega,
-          uf,
-          uasg,
-          modalidades (nome),
-          status_oportunidade (nome),
-          fases_pipeline (nome),
-          lotes (
-            id,
-            nome,
-            itens (
-              valor_unitario,
-              quantidade
-            )
-          )
-        `)
-        .eq("orgao_id", orgaoId);
+      // Simular delay da API
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      if (error) {
-        console.error("Error fetching oportunidades:", error);
-        throw error;
-      }
-
-      // Calcular valor total para cada oportunidade
-      const oportunidadesWithValues = (data || []).map(oportunidade => {
-        let valorTotal = 0;
-        oportunidade.lotes?.forEach((lote: any) => {
-          lote.itens?.forEach((item: any) => {
-            valorTotal += (item.valor_unitario || 0) * (item.quantidade || 0);
-          });
-        });
-
-        return {
-          ...oportunidade,
-          valor_total: valorTotal,
-        };
-      });
-
-      console.log("Oportunidades fetched:", oportunidadesWithValues);
-      return oportunidadesWithValues;
+      const oportunidades = mockOportunidadesPorOrgao[orgaoId] || [];
+      console.log("Oportunidades fetched:", oportunidades);
+      return oportunidades;
     },
     enabled: !!orgaoId,
   });

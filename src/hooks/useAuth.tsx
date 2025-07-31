@@ -1,9 +1,17 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+
+interface User {
+  id: string;
+  email: string;
+  user_metadata?: any;
+}
+
+interface Session {
+  user: User;
+  access_token: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -24,103 +32,79 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-        
-        if (event === 'SIGNED_IN') {
-          toast.success('Login realizado com sucesso!');
-        } else if (event === 'SIGNED_OUT') {
-          toast.success('Logout realizado com sucesso!');
-        }
-      }
-    );
+    // Mock auth session
+    const mockUser: User = {
+      id: 'mock-user-id',
+      email: 'user@example.com',
+      user_metadata: { full_name: 'Usuário Demo' }
+    };
+    
+    const mockSession: Session = {
+      user: mockUser,
+      access_token: 'mock-token'
+    };
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    setUser(mockUser);
+    setSession(mockSession);
+    setLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    // Mock login
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const mockUser: User = {
+      id: 'mock-user-id',
       email,
-      password,
-    });
+      user_metadata: { full_name: 'Usuário Demo' }
+    };
     
-    if (error) {
-      toast.error('Erro ao fazer login: ' + error.message);
-    }
+    const mockSession: Session = {
+      user: mockUser,
+      access_token: 'mock-token'
+    };
+
+    setUser(mockUser);
+    setSession(mockSession);
+    toast.success('Login realizado com sucesso!');
     
-    return { error };
+    return { error: null };
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    // Mock signup
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-        }
-      }
-    });
+    toast.success('Conta criada! Verifique seu e-mail para confirmar.');
     
-    if (error) {
-      toast.error('Erro ao criar conta: ' + error.message);
-    } else {
-      toast.success('Conta criada! Verifique seu e-mail para confirmar.');
-    }
-    
-    return { error };
+    return { error: null };
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error('Erro ao fazer logout: ' + error.message);
-    }
+    // Mock logout
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setUser(null);
+    setSession(null);
+    toast.success('Logout realizado com sucesso!');
   };
 
   const resetPassword = async (email: string) => {
-    const redirectUrl = `${window.location.origin}/reset-password`;
+    // Mock password reset
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+    toast.success('E-mail de recuperação enviado!');
     
-    if (error) {
-      toast.error('Erro ao solicitar recuperação: ' + error.message);
-    } else {
-      toast.success('E-mail de recuperação enviado!');
-    }
-    
-    return { error };
+    return { error: null };
   };
 
   const updatePassword = async (password: string) => {
-    const { error } = await supabase.auth.updateUser({
-      password: password
-    });
+    // Mock password update
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    if (error) {
-      toast.error('Erro ao atualizar senha: ' + error.message);
-    } else {
-      toast.success('Senha atualizada com sucesso!');
-    }
+    toast.success('Senha atualizada com sucesso!');
     
-    return { error };
+    return { error: null };
   };
 
   const value = {
