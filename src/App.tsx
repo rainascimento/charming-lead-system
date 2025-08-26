@@ -17,6 +17,7 @@ import NewOpportunity from "./pages/NewOpportunity";
 import OpportunityDetail from "./pages/OpportunityDetail";
 import Profile from "./pages/Profile";
 import Permissions from "./pages/Permissions";
+import Parameters from "./pages/Parameters";
 import NotFound from "./pages/NotFound";
 import CadastroOportunidade from "./pages/CadastroOportunidade";
 
@@ -85,6 +86,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Permissions />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/parameters" 
+              element={
+                <ProtectedRoute>
+                  <Parameters />
                 </ProtectedRoute>
               } 
             />
