@@ -18,6 +18,7 @@ import OpportunityDetail from "./pages/OpportunityDetail";
 import Profile from "./pages/Profile";
 import Permissions from "./pages/Permissions";
 import Parameters from "./pages/Parameters";
+import ClientRegistration from "./pages/ClientRegistration";
 import NotFound from "./pages/NotFound";
 import CadastroOportunidade from "./pages/CadastroOportunidade";
 
@@ -94,6 +95,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Parameters />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/clients/register" 
+              element={
+                <ProtectedRoute>
+                  <ClientRegistration />
                 </ProtectedRoute>
               } 
             />
