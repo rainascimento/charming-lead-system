@@ -214,16 +214,227 @@ export function BrazilMap() {
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[400px] flex items-center justify-center">
-          {/* Simplified Brazil Map Placeholder */}
+          {/* Brazil Map */}
           <div className="relative w-full h-full bg-muted rounded-lg overflow-hidden">
-            <svg viewBox="0 0 400 300" className="w-full h-full">
-              {/* Sample Brazilian states as simplified shapes */}
+            <svg viewBox="0 0 500 400" className="w-full h-full">
+              {/* Brazil outline with states */}
               {[
-                { id: 'RJ', d: 'M320,180 L340,180 L340,200 L320,200 Z', name: 'Rio de Janeiro' },
-                { id: 'AM', d: 'M50,80 L120,80 L120,150 L50,150 Z', name: 'Amazonas' },
-                { id: 'CE', d: 'M250,60 L280,60 L280,90 L250,90 Z', name: 'Ceará' },
-                { id: 'ES', d: 'M310,160 L330,160 L330,180 L310,180 Z', name: 'Espírito Santo' },
-                { id: 'RN', d: 'M270,40 L300,40 L300,70 L270,70 Z', name: 'Rio Grande do Norte' }
+                // Amazonas
+                { 
+                  id: 'AM', 
+                  d: 'M40,80 L140,70 L160,90 L150,130 L120,140 L90,130 L60,120 L40,100 Z', 
+                  name: 'Amazonas',
+                  labelX: 100,
+                  labelY: 110
+                },
+                // Pará
+                { 
+                  id: 'PA', 
+                  d: 'M140,70 L200,75 L210,100 L190,130 L160,135 L150,130 L160,90 Z', 
+                  name: 'Pará',
+                  labelX: 175,
+                  labelY: 105
+                },
+                // Ceará
+                { 
+                  id: 'CE', 
+                  d: 'M250,80 L290,75 L300,95 L280,110 L250,105 Z', 
+                  name: 'Ceará',
+                  labelX: 270,
+                  labelY: 95
+                },
+                // Rio Grande do Norte
+                { 
+                  id: 'RN', 
+                  d: 'M290,75 L320,70 L325,85 L300,95 Z', 
+                  name: 'Rio Grande do Norte',
+                  labelX: 310,
+                  labelY: 82
+                },
+                // Paraíba
+                { 
+                  id: 'PB', 
+                  d: 'M300,95 L325,85 L330,100 L310,105 Z', 
+                  name: 'Paraíba',
+                  labelX: 315,
+                  labelY: 97
+                },
+                // Pernambuco
+                { 
+                  id: 'PE', 
+                  d: 'M280,110 L310,105 L330,100 L335,120 L300,125 Z', 
+                  name: 'Pernambuco',
+                  labelX: 305,
+                  labelY: 115
+                },
+                // Bahia
+                { 
+                  id: 'BA', 
+                  d: 'M210,130 L280,110 L300,125 L290,180 L240,190 L210,170 Z', 
+                  name: 'Bahia',
+                  labelX: 250,
+                  labelY: 150
+                },
+                // Minas Gerais
+                { 
+                  id: 'MG', 
+                  d: 'M240,190 L290,180 L310,200 L290,240 L250,245 L220,230 Z', 
+                  name: 'Minas Gerais',
+                  labelX: 260,
+                  labelY: 215
+                },
+                // Espírito Santo
+                { 
+                  id: 'ES', 
+                  d: 'M310,200 L330,195 L335,220 L320,225 Z', 
+                  name: 'Espírito Santo',
+                  labelX: 325,
+                  labelY: 210
+                },
+                // Rio de Janeiro
+                { 
+                  id: 'RJ', 
+                  d: 'M290,240 L320,225 L335,220 L340,240 L320,250 L300,245 Z', 
+                  name: 'Rio de Janeiro',
+                  labelX: 315,
+                  labelY: 238
+                },
+                // São Paulo
+                { 
+                  id: 'SP', 
+                  d: 'M220,230 L250,245 L290,240 L300,245 L280,270 L240,275 L200,260 Z', 
+                  name: 'São Paulo',
+                  labelX: 250,
+                  labelY: 252
+                },
+                // Paraná
+                { 
+                  id: 'PR', 
+                  d: 'M200,260 L240,275 L280,270 L270,300 L220,305 L180,290 Z', 
+                  name: 'Paraná',
+                  labelX: 230,
+                  labelY: 285
+                },
+                // Santa Catarina
+                { 
+                  id: 'SC', 
+                  d: 'M180,290 L220,305 L270,300 L265,320 L200,325 L170,310 Z', 
+                  name: 'Santa Catarina',
+                  labelX: 215,
+                  labelY: 310
+                },
+                // Rio Grande do Sul
+                { 
+                  id: 'RS', 
+                  d: 'M170,310 L200,325 L265,320 L260,350 L190,360 L140,340 Z', 
+                  name: 'Rio Grande do Sul',
+                  labelX: 200,
+                  labelY: 340
+                },
+                // Mato Grosso do Sul
+                { 
+                  id: 'MS', 
+                  d: 'M150,220 L200,215 L220,230 L200,260 L180,290 L130,280 L120,250 Z', 
+                  name: 'Mato Grosso do Sul',
+                  labelX: 165,
+                  labelY: 245
+                },
+                // Mato Grosso
+                { 
+                  id: 'MT', 
+                  d: 'M90,130 L150,130 L190,130 L210,130 L200,180 L150,185 L120,170 L100,150 Z', 
+                  name: 'Mato Grosso',
+                  labelX: 150,
+                  labelY: 155
+                },
+                // Goiás
+                { 
+                  id: 'GO', 
+                  d: 'M200,180 L240,190 L220,230 L200,215 L150,185 Z', 
+                  name: 'Goiás',
+                  labelX: 200,
+                  labelY: 205
+                },
+                // Distrito Federal
+                { 
+                  id: 'DF', 
+                  d: 'M205,200 L215,195 L220,205 L210,210 Z', 
+                  name: 'Distrito Federal',
+                  labelX: 212,
+                  labelY: 203
+                },
+                // Tocantins
+                { 
+                  id: 'TO', 
+                  d: 'M190,130 L240,125 L250,160 L240,190 L200,180 L190,150 Z', 
+                  name: 'Tocantins',
+                  labelX: 215,
+                  labelY: 155
+                },
+                // Maranhão
+                { 
+                  id: 'MA', 
+                  d: 'M190,90 L250,85 L280,110 L240,125 L200,120 L190,100 Z', 
+                  name: 'Maranhão',
+                  labelX: 230,
+                  labelY: 105
+                },
+                // Piauí
+                { 
+                  id: 'PI', 
+                  d: 'M240,125 L280,110 L250,160 Z', 
+                  name: 'Piauí',
+                  labelX: 255,
+                  labelY: 132
+                },
+                // Alagoas
+                { 
+                  id: 'AL', 
+                  d: 'M325,125 L340,120 L345,140 L330,145 Z', 
+                  name: 'Alagoas',
+                  labelX: 335,
+                  labelY: 132
+                },
+                // Sergipe
+                { 
+                  id: 'SE', 
+                  d: 'M320,145 L335,140 L340,160 L325,165 Z', 
+                  name: 'Sergipe',
+                  labelX: 330,
+                  labelY: 152
+                },
+                // Rondônia
+                { 
+                  id: 'RO', 
+                  d: 'M60,120 L90,130 L100,150 L80,160 L60,140 Z', 
+                  name: 'Rondônia',
+                  labelX: 80,
+                  labelY: 140
+                },
+                // Acre
+                { 
+                  id: 'AC', 
+                  d: 'M20,110 L60,120 L60,140 L40,145 L20,130 Z', 
+                  name: 'Acre',
+                  labelX: 40,
+                  labelY: 128
+                },
+                // Roraima
+                { 
+                  id: 'RR', 
+                  d: 'M100,20 L140,15 L150,40 L120,45 L90,35 Z', 
+                  name: 'Roraima',
+                  labelX: 120,
+                  labelY: 32
+                },
+                // Amapá
+                { 
+                  id: 'AP', 
+                  d: 'M200,40 L230,35 L240,60 L210,65 L190,55 Z', 
+                  name: 'Amapá',
+                  labelX: 215,
+                  labelY: 50
+                }
               ].map(state => (
                 <path
                   key={state.id}
@@ -246,21 +457,27 @@ export function BrazilMap() {
                 />
               ))}
               
-              {/* State Labels */}
+              {/* State Labels - Only show for main states */}
               {[
-                { id: 'RJ', x: 330, y: 195 },
-                { id: 'AM', x: 85, y: 120 },
-                { id: 'CE', x: 265, y: 80 },
-                { id: 'ES', x: 320, y: 175 },
-                { id: 'RN', x: 285, y: 60 }
+                { id: 'RJ', x: 315, y: 238 },
+                { id: 'AM', x: 100, y: 110 },
+                { id: 'CE', x: 270, y: 95 },
+                { id: 'ES', x: 325, y: 210 },
+                { id: 'RN', x: 310, y: 82 },
+                { id: 'SP', x: 250, y: 252 },
+                { id: 'MG', x: 260, y: 215 },
+                { id: 'BA', x: 250, y: 150 },
+                { id: 'PR', x: 230, y: 285 },
+                { id: 'RS', x: 200, y: 340 }
               ].map(state => (
                 <text
                   key={state.id}
                   x={state.x}
                   y={state.y}
                   textAnchor="middle"
-                  className="text-xs font-medium fill-white"
+                  className="text-xs font-bold fill-white drop-shadow-sm"
                   pointerEvents="none"
+                  style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}
                 >
                   {state.id}
                 </text>

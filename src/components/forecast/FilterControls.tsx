@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card } from '@/components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { X, Filter } from 'lucide-react';
 import { useForecastStore } from '@/hooks/useForecastStore';
 
@@ -106,104 +107,140 @@ export function FilterControls() {
         )}
       </div>
 
-      {/* Filter Controls Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Filter Controls Accordion */}
+      <Accordion type="multiple" defaultValue={["foco", "regiao"]} className="w-full">
         {/* Foco Filter */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-foreground">Filtro por Foco</h3>
-          <ToggleGroup 
-            type="multiple" 
-            value={filters.foco} 
-            onValueChange={handleFocoChange}
-            className="flex-wrap justify-start"
-          >
-            {focoOptions.map(option => (
-              <ToggleGroupItem 
-                key={option} 
-                value={option} 
-                size="sm"
-                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                {option}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
+        <AccordionItem value="foco">
+          <AccordionTrigger className="text-sm font-medium">
+            Filtro por Foco
+            {filters.foco.length > 0 && (
+              <Badge variant="secondary" className="ml-2 text-xs">
+                {filters.foco.length}
+              </Badge>
+            )}
+          </AccordionTrigger>
+          <AccordionContent className="pt-4">
+            <ToggleGroup 
+              type="multiple" 
+              value={filters.foco} 
+              onValueChange={handleFocoChange}
+              className="flex-wrap justify-start gap-2"
+            >
+              {focoOptions.map(option => (
+                <ToggleGroupItem 
+                  key={option} 
+                  value={option} 
+                  size="sm"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {option}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </AccordionContent>
+        </AccordionItem>
 
         {/* Região Filter */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-foreground">Filtro por Região</h3>
-          <ToggleGroup 
-            type="multiple" 
-            value={filters.regiao} 
-            onValueChange={handleRegiaoChange}
-            className="flex-wrap justify-start"
-          >
-            {regiaoOptions.map(option => (
+        <AccordionItem value="regiao">
+          <AccordionTrigger className="text-sm font-medium">
+            Filtro por Região
+            {filters.regiao.length > 0 && (
+              <Badge variant="secondary" className="ml-2 text-xs">
+                {filters.regiao.length}
+              </Badge>
+            )}
+          </AccordionTrigger>
+          <AccordionContent className="pt-4">
+            <ToggleGroup 
+              type="multiple" 
+              value={filters.regiao} 
+              onValueChange={handleRegiaoChange}
+              className="flex-wrap justify-start gap-2"
+            >
+              {regiaoOptions.map(option => (
+                <ToggleGroupItem 
+                  key={option} 
+                  value={option} 
+                  size="sm"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {option}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Natureza Filter */}
+        <AccordionItem value="natureza">
+          <AccordionTrigger className="text-sm font-medium">
+            Filtro por Oportunidades
+            {filters.natureza && (
+              <Badge variant="secondary" className="ml-2 text-xs">
+                1
+              </Badge>
+            )}
+          </AccordionTrigger>
+          <AccordionContent className="pt-4">
+            <ToggleGroup 
+              type="single" 
+              value={filters.natureza || ''} 
+              onValueChange={handleNaturezaChange}
+              className="flex-wrap justify-start gap-2"
+            >
               <ToggleGroupItem 
-                key={option} 
-                value={option} 
+                value="farming" 
                 size="sm"
                 className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
-                {option}
+                FARMING
               </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-
-        {/* Natureza Filter */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-foreground">Filtro por Oportunidades</h3>
-          <ToggleGroup 
-            type="single" 
-            value={filters.natureza || ''} 
-            onValueChange={handleNaturezaChange}
-            className="flex-wrap justify-start"
-          >
-            <ToggleGroupItem 
-              value="farming" 
-              size="sm"
-              className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-            >
-              FARMING
-            </ToggleGroupItem>
-            <ToggleGroupItem 
-              value="hunting" 
-              size="sm"
-              className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-            >
-              HUNTING
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
+              <ToggleGroupItem 
+                value="hunting" 
+                size="sm"
+                className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                HUNTING
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </AccordionContent>
+        </AccordionItem>
 
         {/* Tipo Contratação Filter */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-foreground">Filtro por Tipo de Contratação</h3>
-          <div className="space-y-2">
-            {tipoContratacaoOptions.map(tipo => (
-              <div key={tipo} className="flex items-center space-x-2">
-                <Checkbox
-                  id={tipo}
-                  checked={
-                    tipo === 'Selecionar tudo' 
-                      ? filters.tipoContratacao.length === tipoContratacaoOptions.length - 1
-                      : filters.tipoContratacao.includes(tipo)
-                  }
-                  onCheckedChange={(checked) => handleTipoContratacaoChange(tipo, !!checked)}
-                />
-                <label 
-                  htmlFor={tipo} 
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {tipo}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        <AccordionItem value="contratacao">
+          <AccordionTrigger className="text-sm font-medium">
+            Filtro por Tipo de Contratação
+            {filters.tipoContratacao.length > 0 && (
+              <Badge variant="secondary" className="ml-2 text-xs">
+                {filters.tipoContratacao.length}
+              </Badge>
+            )}
+          </AccordionTrigger>
+          <AccordionContent className="pt-4">
+            <div className="space-y-3">
+              {tipoContratacaoOptions.map(tipo => (
+                <div key={tipo} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={tipo}
+                    checked={
+                      tipo === 'Selecionar tudo' 
+                        ? filters.tipoContratacao.length === tipoContratacaoOptions.length - 1
+                        : filters.tipoContratacao.includes(tipo)
+                    }
+                    onCheckedChange={(checked) => handleTipoContratacaoChange(tipo, !!checked)}
+                  />
+                  <label 
+                    htmlFor={tipo} 
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {tipo}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {/* Active Filter Chips */}
       {getActiveFilterChips().length > 0 && (

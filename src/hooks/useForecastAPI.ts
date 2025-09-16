@@ -51,6 +51,118 @@ const mockMapaData = [
     temperatura: { FRIA: 20.0, QUENTE: 22.0, MORNA: 10.0 },
     tiposContratacao: ['PREGÃO', 'DISPENSA'],
     linkLista: '/oportunidades?uf=AM'
+  },
+  {
+    uf: 'CE',
+    valorTotalMi: 48.0,
+    qtdOportunidades: 2,
+    foco: { ESTADUAL: 35.0, MUNICIPAL: 13.0 },
+    setoresTop3: [
+      { nome: 'TRÂNSITO', valorMi: 20.0 },
+      { nome: 'TECNOLOGIA', valorMi: 18.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 10.0 }
+    ],
+    temperatura: { FRIA: 18.0, QUENTE: 20.0, MORNA: 10.0 },
+    tiposContratacao: ['PREGÃO', 'ATA'],
+    linkLista: '/oportunidades?uf=CE'
+  },
+  {
+    uf: 'ES',
+    valorTotalMi: 26.0,
+    qtdOportunidades: 1,
+    foco: { ESTADUAL: 20.0, MUNICIPAL: 6.0 },
+    setoresTop3: [
+      { nome: 'TECNOLOGIA', valorMi: 15.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 8.0 },
+      { nome: 'SAÚDE', valorMi: 3.0 }
+    ],
+    temperatura: { FRIA: 10.0, QUENTE: 12.0, MORNA: 4.0 },
+    tiposContratacao: ['ADESÃO'],
+    linkLista: '/oportunidades?uf=ES'
+  },
+  {
+    uf: 'RN',
+    valorTotalMi: 19.8,
+    qtdOportunidades: 1,
+    foco: { ESTADUAL: 15.0, MUNICIPAL: 4.8 },
+    setoresTop3: [
+      { nome: 'EDUCAÇÃO', valorMi: 12.0 },
+      { nome: 'TECNOLOGIA', valorMi: 5.0 },
+      { nome: 'SAÚDE', valorMi: 2.8 }
+    ],
+    temperatura: { FRIA: 8.0, QUENTE: 7.8, MORNA: 4.0 },
+    tiposContratacao: ['PREGÃO'],
+    linkLista: '/oportunidades?uf=RN'
+  },
+  {
+    uf: 'SP',
+    valorTotalMi: 85.0,
+    qtdOportunidades: 4,
+    foco: { ESTADUAL: 65.0, MUNICIPAL: 20.0 },
+    setoresTop3: [
+      { nome: 'TECNOLOGIA', valorMi: 40.0 },
+      { nome: 'TRÂNSITO', valorMi: 25.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 20.0 }
+    ],
+    temperatura: { FRIA: 30.0, QUENTE: 35.0, MORNA: 20.0 },
+    tiposContratacao: ['PREGÃO', 'ATA', 'ADESÃO'],
+    linkLista: '/oportunidades?uf=SP'
+  },
+  {
+    uf: 'MG',
+    valorTotalMi: 72.0,
+    qtdOportunidades: 3,
+    foco: { ESTADUAL: 50.0, MUNICIPAL: 22.0 },
+    setoresTop3: [
+      { nome: 'TECNOLOGIA', valorMi: 35.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 22.0 },
+      { nome: 'TRÂNSITO', valorMi: 15.0 }
+    ],
+    temperatura: { FRIA: 25.0, QUENTE: 30.0, MORNA: 17.0 },
+    tiposContratacao: ['PREGÃO', 'ATA'],
+    linkLista: '/oportunidades?uf=MG'
+  },
+  {
+    uf: 'BA',
+    valorTotalMi: 58.0,
+    qtdOportunidades: 2,
+    foco: { ESTADUAL: 42.0, MUNICIPAL: 16.0 },
+    setoresTop3: [
+      { nome: 'EDUCAÇÃO', valorMi: 25.0 },
+      { nome: 'TECNOLOGIA', valorMi: 20.0 },
+      { nome: 'SAÚDE', valorMi: 13.0 }
+    ],
+    temperatura: { FRIA: 22.0, QUENTE: 24.0, MORNA: 12.0 },
+    tiposContratacao: ['PREGÃO', 'DISPENSA'],
+    linkLista: '/oportunidades?uf=BA'
+  },
+  {
+    uf: 'PR',
+    valorTotalMi: 44.0,
+    qtdOportunidades: 2,
+    foco: { ESTADUAL: 32.0, MUNICIPAL: 12.0 },
+    setoresTop3: [
+      { nome: 'TRÂNSITO', valorMi: 18.0 },
+      { nome: 'TECNOLOGIA', valorMi: 15.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 11.0 }
+    ],
+    temperatura: { FRIA: 16.0, QUENTE: 18.0, MORNA: 10.0 },
+    tiposContratacao: ['PREGÃO', 'ATA'],
+    linkLista: '/oportunidades?uf=PR'
+  },
+  {
+    uf: 'RS',
+    valorTotalMi: 36.0,
+    qtdOportunidades: 2,
+    foco: { ESTADUAL: 26.0, MUNICIPAL: 10.0 },
+    setoresTop3: [
+      { nome: 'TECNOLOGIA', valorMi: 16.0 },
+      { nome: 'EDUCAÇÃO', valorMi: 12.0 },
+      { nome: 'TRÂNSITO', valorMi: 8.0 }
+    ],
+    temperatura: { FRIA: 14.0, QUENTE: 15.0, MORNA: 7.0 },
+    tiposContratacao: ['PREGÃO', 'ADESÃO'],
+    linkLista: '/oportunidades?uf=RS'
   }
 ];
 
